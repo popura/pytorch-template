@@ -1,8 +1,8 @@
-optimizer:
-  name: sgd
-  params:
-    lr: 0.001
-    momentum: 0.9
-    dampening: 0
-    weight_decay: 0.0001
-    nesterov: false
+# @package _group_
+name: sgd
+params:
+  lr: 0.001
+  momentum: 0.9
+  dampening: 0
+  weight_decay: 0.0001
+  nesterov: false

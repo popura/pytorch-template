@@ -1,8 +1,0 @@
-model:
-  name: vgg1d
-  param:
-    base_channels: 32
-    depth: 4
-    max_channels: 512
-    down_conv_layer: nn.Conv1d
-    activation: nn.ReLU

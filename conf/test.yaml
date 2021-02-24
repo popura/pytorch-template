@@ -1,8 +1,0 @@
-defaults:
-  - dataset: dcase2019task1
-  - model: baseline_cnn
-  - pre_process: null
-seed: null
-loader: 
-  batch_size: 16
-  num_workers: 0

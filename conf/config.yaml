@@ -1,6 +1,6 @@
 defaults:
-  - dataset: dcase2018task5
-  - model: baseline_cnn
+  - dataset: mnist
+  - model: vgg2d
   - optimizer: adam
   - lr_scheduler: multi_step
 seed: null
