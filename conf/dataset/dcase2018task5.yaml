@@ -1,0 +1,19 @@
+dataset:
+  path: ./data/
+  pre_load: False
+  pre_transforms: null
+  sample_rate: 16000
+  nodes:
+    - 2
+    - 3
+    - 4
+  shuffle_nodes: False
+  transforms:
+    random_crop:
+      length: 160000
+    mel_spectrogram:
+      sample_rate: 16000
+      n_fft: 640
+      n_mels: 40
+    amplitude_to_db:
+      stype: power

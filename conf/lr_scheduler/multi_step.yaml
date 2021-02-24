@@ -1,0 +1,7 @@
+lr_scheduler:
+  name: multi_step
+  params:
+    milestones:
+      - 0.5
+      - 0.75
+    gamma: 0.1

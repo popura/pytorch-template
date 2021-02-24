@@ -1,0 +1,10 @@
+defaults:
+  - dataset: dcase2018task5
+  - model: baseline_cnn
+  - optimizer: adam
+  - lr_scheduler: multi_step
+seed: null
+loader: 
+  batch_size: 64
+  num_workers: 0
+epoch: 200

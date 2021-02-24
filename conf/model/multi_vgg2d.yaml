@@ -1,0 +1,9 @@
+model:
+  name: multi_vgg2d
+  param:
+    num_inputs: 3
+    base_channels: 16
+    depth: 4
+    max_channels: 512
+    down_conv_layer: nn.Conv2d
+    activation: nn.ReLU

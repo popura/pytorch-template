@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "<YOUR PROJECT NAME>"
+version = "0.1.0"
+description = ""
+authors = ["<YOUR NAME>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+matplotlib = "^3.2.1"
+scikit-learn = "^0.23.1"
+hydra-core = "^1.0.6"
+pandas = "^1.0.5"
+optuna = "^1.5.0"
+torch = "^1.7.1"
+torchaudio = "^0.7.2"
+torchvision = "^0.8.2"
+torchsummary = "^1.5.1"
+cupy = "7.8.0.post1"
+deepy = {path = "external/deepy-0.3.1-py3-none-any.whl"}
+
+[tool.poetry.dev-dependencies]
+ipython = "^7.15.0"
+
+[build-system]
+requires = ["poetry>=1.1.4"]
+build-backend = "poetry.masonry.api"

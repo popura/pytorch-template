@@ -1,0 +1,14 @@
+model:
+  name: unet_vgg1d
+  param:
+    base_channels: 32
+    depth: 4
+    max_channels: 512
+    up_conv_layer: nn.ConvTranspose1d
+    down_conv_layer: nn.Conv1d
+    activation: nn.ReLU
+    final_activation: nn.Identity
+    audio_buffer_size: 64
+    frame_rate: 30
+    n_bits: 8
+    temperature: 0.1
