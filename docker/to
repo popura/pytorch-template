@@ -1,2 +1,0 @@
-nvidia-docker run -it --rm -u 'sayaka' -v '/home/sayaka/CNN/project':'/home/sayaka/CNN/project' -p 8888:8888 cuda8/cudnn6:tfkeras /bin/bash
-Makefile:27: ターゲット 'run' のレシピで失敗しました
