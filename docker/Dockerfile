@@ -1,7 +1,7 @@
-FROM nvidia/cuda:8.0-cudnn5-devel
+FROM nvidia/cuda:10.2-devel-ubuntu18.04
 MAINTAINER Yuma.K
 
-# --- Install Packages with Apt-Get ---
+# --- Install Packages with Apt ---
 RUN apt update -y && apt upgrade -y
 RUN apt install -y \
     sudo ssh \
@@ -14,18 +14,6 @@ RUN apt install -y \
 # --- Install Pythoon ---
 RUN apt update -y && apt upgrade -y
 RUN apt install -y python python-dev
-RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN python get-pip.py
-RUN pip install --upgrade pip
-RUN rm get-pip.py
-
-# --- Install Python Requirements ---
-RUN pip install setproctitle==1.1.10 numpy==1.12.0 \
-    scipy==0.18.1 pyglib==0.1 Cython==0.17 opencv-python \
-    Pillow
-RUN pip install scikit_image==0.14 \
-    tensorflow_gpu==1.1.0 python_gflags==3.1.1 \
-    python_magic==0.4.13
 
 # --- Root User Settings in Container ---
 ARG ROOT_PASSWORD="password"
