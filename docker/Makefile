@@ -4,12 +4,11 @@
 # 2019/8/4 Yuma Kinoshita
 # 2017/3/6 Yousuke Sugawara
 
-USER_NAME = yuma.k
+USER_NAME = user
 GROUP_NAME = Domain
 HOST_PATH = '/home/$(USER_NAME)'
 CONTAINER_PATH = '/home/$(USER_NAME)'
 ROOT_PASSWORD = 'password'
-MAIN_USER_PASSWORD = 'password'
 
 all: build run
 
