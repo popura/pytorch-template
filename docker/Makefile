@@ -4,12 +4,11 @@
 # 2019/8/4 Yuma Kinoshita
 # 2017/3/6 Yousuke Sugawara
 
-USER_NAME = 'yuma.k'
-HOST_PATH = '/home/yuma.k/git/DeepUPE'
-CONTAINER_PATH = '/home/yuma.k/git/DeepUPE'
+USER_NAME = yuma.k
+GROUP_NAME = Domain
+HOST_PATH = '/home/$(USER_NAME)'
+CONTAINER_PATH = '/home/$(USER_NAME)'
 ROOT_PASSWORD = 'password'
-MAIN_USER_ID = 52801133
-MAIN_USER_NAME = 'sayaka'
 MAIN_USER_PASSWORD = 'password'
 
 all: build run
@@ -17,8 +16,10 @@ all: build run
 build:
 	docker build -t nvidia/cuda:sample ./ \
 	--build-arg ROOT_PASSWORD=$(ROOT_PASSWORD) \
-	--build-arg MAIN_USER_ID=$(MAIN_USER_ID) \
-	--build-arg MAIN_USER_NAME=$(MAIN_USER_NAME)
 
 run:
-	docker run -it --rm --gpus all -u $(USER_NAME) -v $(HOST_PATH):$(CONTAINER_PATH) nvidia/cuda:sample /bin/bash
+	docker run -it --rm --gpus all \
+	-e USER_NAME=$(USER_NAME) -e GROUP_NAME=$(GROUP_NAME) \
+	-e LOCAL_UID=$(shell id -u $(USER)) -e LOCAL_GID=$(shell id -g $(USER)) \
+	-v $(HOST_PATH):$(CONTAINER_PATH) \
+	nvidia/cuda:sample /bin/bash
