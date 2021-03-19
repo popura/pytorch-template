@@ -4,7 +4,7 @@
 # 2019/8/4 Yuma Kinoshita
 # 2017/3/6 Yousuke Sugawara
 
-USER_NAME = user
+USER_NAME = $(USER)
 GROUP_NAME = Domain
 HOST_PATH = '/home/$(USER_NAME)'
 CONTAINER_PATH = '/home/$(USER_NAME)'
