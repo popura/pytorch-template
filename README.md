@@ -8,7 +8,7 @@ A template for PyTorch projects
       ```
         cd docker
       ``` 
-  1. Change variables in `Makefile`
+  1. Change variables in `Makefile` as needed
   1. Add scripts into `Dockerfile` as needed
   1. Perform the following command for building your docker image
 
