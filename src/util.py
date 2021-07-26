@@ -1,11 +1,10 @@
-import typing
-from typing import List
+from typing import Optional
 
 import numpy as np
 
 import torch
 import torch.nn as nn
-from torchsummary import summary
+from torchinfo import summary
 
 from omegaconf import DictConfig
 
@@ -39,7 +38,7 @@ def set_random_seed(seed: int) -> None:
     torch.backends.cudnn.benchmark = False
 
 
-def get_model(classes: List[str], cfg: DictConfig) -> nn.Module:
+def get_model(classes: list[str], cfg: DictConfig) -> nn.Module:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if cfg.model.name == "vgg2d":
@@ -52,10 +51,6 @@ def get_model(classes: List[str], cfg: DictConfig) -> nn.Module:
             conv=nn.Conv2d,
             down_conv=nn.Conv2d,
             activation=nn.ReLU)
-        if device.type == "cuda":
-            net = torch.nn.DataParallel(net)
-        net = net.to(device)
-        summary(net, input_size=(1, 32, 32))
     else:
         raise NotImplementedError()
 

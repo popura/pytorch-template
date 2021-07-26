@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
-from torchsummary import summary
+from torchinfo import summary
 
 from omegaconf import DictConfig, OmegaConf
 import hydra
@@ -30,15 +30,12 @@ import util as myutil
 import train_id as tid
 
 
-def save_model(model: nn.Module, path: str) -> typing.NoReturn:
+def save_model(model: nn.Module, path: str) -> None:
     """Save a DNN model (torch.nn.Module).
-
     Args:
         model: torch.nn.Module object
         path: Directory path where model will be saved
-
     Returns:
-
     """
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     if isinstance(model, nn.DataParallel):
@@ -149,6 +146,10 @@ def main(cfg: DictConfig) -> None:
     # Training
     trainloaders, valloaders, classes = get_data_loaders(cfg)
     net = myutil.get_model(classes, cfg)
+    if device.type == "cuda":
+        net = torch.nn.DataParallel(net)
+    net = net.to(device)
+    summary(net, input_size=(1, 32, 32))
 
     criterion = nn.CrossEntropyLoss()
     optimizer = get_optimizer(net.parameters(), cfg)
