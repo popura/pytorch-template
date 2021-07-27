@@ -4,9 +4,8 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-from torchinfo import summary
 
-from omegaconf import DictConfig
+from omegaconf import OmegaConf, DictConfig
 
 from deepy.nn.model import VGG2d
 
@@ -27,7 +26,7 @@ def is_same_config(cfg1: DictConfig, cfg2: DictConfig) -> bool:
 
 def print_config(cfg: DictConfig) -> None:
     print('-----Parameters-----')
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
     print('--------------------')
 
 
@@ -39,8 +38,6 @@ def set_random_seed(seed: int) -> None:
 
 
 def get_model(classes: list[str], cfg: DictConfig) -> nn.Module:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     if cfg.model.name == "vgg2d":
         net = VGG2d(
             in_channels=1,

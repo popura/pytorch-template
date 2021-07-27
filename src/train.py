@@ -15,6 +15,7 @@ from torchinfo import summary
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
+import deepy
 import deepy.data.transform
 import deepy.data.audio.transform
 from deepy.train.trainer import ClassifierTrainer
