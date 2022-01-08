@@ -6,10 +6,10 @@
 
 USER_NAME = $(USER)
 GROUP_NAME = Domain
-HOST_PATH = '/home/$(USER_NAME)'
-CONTAINER_PATH = '/home/$(USER_NAME)'
+HOST_PATH = '/home/$(USER_NAME)/.../pytorch-template'
+CONTAINER_PATH = '/home/$(USER_NAME)/pytorch-template'
 ROOT_PASSWORD = 'password'
-IMAGE_TAG = 'nvidia/cuda:sample'
+IMAGE_TAG = 'pytorch-template:latest'
 
 all: build run
 
