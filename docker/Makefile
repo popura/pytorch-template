@@ -6,7 +6,7 @@
 
 USER_NAME = $(USER)
 GROUP_NAME = Domain
-HOST_PATH = '/home/$(USER_NAME)/.../pytorch-template'
+HOST_PATH = '/home/$(USER_NAME)/<path-to-dir>/pytorch-template'
 CONTAINER_PATH = '/home/$(USER_NAME)/pytorch-template'
 ROOT_PASSWORD = 'password'
 IMAGE_TAG = 'pytorch-template:latest'
