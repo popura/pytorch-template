@@ -31,7 +31,7 @@ RUN wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz && \
     python3 -m pip install --upgrade pip
 
 # --- Install PyTorch ---
-RUN python3 -m pip install --no-chache-dir \
+RUN python3 -m pip install --no-cache-dir \
     torch torchvision torchaudio \
     --extra-index-url \
      https://download.pytorch.org/whl/cu113
