@@ -2,7 +2,7 @@
 A template for PyTorch projects
 
 # Dependencies
-- (For docker) rootless docker
+- Docker
 
 # Using docker
   1. Move to `docker` directory

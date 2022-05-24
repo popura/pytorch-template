@@ -34,7 +34,7 @@ RUN wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tar.xz && \
 RUN python3 -m pip install --no-chache-dir \
     torch torchvision torchaudio \
     --extra-index-url \
-     https://download.pytorch.org/whl/cu113\
+     https://download.pytorch.org/whl/cu113
 
 # --- Root User Settings in Container ---
 ARG ROOT_PASSWORD="password"
