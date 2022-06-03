@@ -10,7 +10,8 @@ GROUP_NAME = Domain
 HOST_PATH = '/home/$(USER_NAME)/<path-to-dir>/pytorch-template'
 CONTAINER_PATH = '/home/$(USER_NAME)/pytorch-template'
 ROOT_PASSWORD = 'password'
-IMAGE_TAG = 'pytorch-template:latest'
+IMAGE_TAG = '<pytorch-template:latest>'
+CONTAINER_NAME = '<pytorch-test>'
 
 all: build run
 
@@ -23,4 +24,5 @@ run:
 	-e USER_NAME=$(USER_NAME) -e GROUP_NAME=$(GROUP_NAME) \
 	-e LOCAL_UID=$(shell id -u $(USER)) -e LOCAL_GID=$(shell id -g $(USER)) \
 	-v $(HOST_PATH):$(CONTAINER_PATH) \
+	-name $(CONTAINER_NAME) \
 	$(IMAGE_TAG) /bin/bash
