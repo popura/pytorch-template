@@ -55,7 +55,7 @@ A template for PyTorch projects
      (poetry run) jupyter notebook --generate-config
      ```
      
-  - and set a variable in `~/.jupyter/jupyter_notebook_config.py` as
+  - and set a parameter `c.NotebookApp.ip` in `~/.jupyter/jupyter_notebook_config.py` as
 
      ```
      c.NotebookApp.ip = '0.0.0.0'
