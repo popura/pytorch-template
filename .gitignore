@@ -92,6 +92,9 @@ ENV/
 # VSCode
 .vscode/
 
+# Scripts for private purpose
+/notebooks/local/
+
 # Data
 /data/
 /model/

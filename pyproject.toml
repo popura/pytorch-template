@@ -19,6 +19,9 @@ cupy = "7.8.0.post1"
 deepy = {path = "external/deepy-0.3.2-py3-none-any.whl"}
 
 [tool.poetry.dev-dependencies]
+flake8 = "^3.9.0"
+autopep8 = "^1.5.6"
+Sphinx = "^3.5.2"
 ipython = "^7.15.0"
 
 [build-system]
