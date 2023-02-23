@@ -33,14 +33,14 @@ A template for PyTorch projects
   1. Remove unrequired dependencies in `pyproject.toml`
   1. Create a vertual environment and install dependencies by
 
-    ```
+     ```
       poetry install
-    ```
+     ```
   1. Add required dependencies by
 
-    ```
+     ```
       poetry add <library name>
-    ```
+     ```
 
 # Developing your package
   1. For prototyping, make `notebooks/local` directory and add jupyter notebook into the directory.
