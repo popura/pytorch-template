@@ -48,3 +48,15 @@ A template for PyTorch projects
   1. For testing, add test codes into `test` directory
   1. For evaluation, add script files into `scripts` directory
 
+# Caution
+  - To access a jupyter server from other computers, you will neeed
+  
+     ```
+     (poetry run) jupyter notebook --generate-config
+     ```
+     
+   and set a variable in `~/.jupyter/jupyter_notebook_config.py` as
+     
+     ```
+     c.NotebookApp.ip = '0.0.0.0'
+     ```
