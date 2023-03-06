@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  pytorch-template:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    tty: true
+    restart: always
+    container_name: pytorch-template
+    hostname: pytorch-template
+    environment:
+      - TZ=Asia/Tokyo
+      - JUPYTER_PORT=8888
+    volumes:
+      - .:/image-developer
+    ports:
+      - 8888:8888
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: jupyter notebook --allow-root
+

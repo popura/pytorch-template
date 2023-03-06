@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04
 MAINTAINER Yuma.K
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -11,10 +11,12 @@ RUN apt install -y \
     build-essential \
     zsh tmux make zip unzip git curl wget vim tree htop \
     graphviz && \
+    apt autoremove -y && \
     apt clean -y && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/local/src/*
 
-# --- Install Pythoon ---
+# --- Install Python ---
 RUN apt update -y && apt upgrade -y
 RUN apt install -y \
     tk-dev \
@@ -30,12 +32,33 @@ RUN apt install -y \
     cd ../ && \
     python3 -m pip install --upgrade pip
 
-# --- Install PyTorch ---
-RUN pip3 install \
-    torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 \
-    -f https://download.pytorch.org/whl/cu113/torch_stable.html
+# --- Install Python ---
+RUN apt update -y && apt upgrade -y
+RUN apt install -y \
+    tk-dev \
+    build-essential \
+    libffi-dev libssl-dev \
+    zlib1g-dev liblzma-dev \
+    libbz2-dev libreadline-dev libsqlite3-dev && \
+    apt autoremove -y && \
+    apt clean -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/local/src/*
+RUN wget https://www.python.org/ftp/python/3.9.11/Python-3.9.11.tar.xz && \
+    tar xJf Python-3.9.11.tar.xz && \
+    cd Python-3.9.11 && \
+    ./configure && \
+    make && make install && \
+    cd ../ && \
+    python3 -m pip install --upgrade pip && \
+    rm -rf Python-3.9.11.tar.xz && \
+    rm -rf Python-3.9.11
 
-# --- Root User Settings in Container ---
-ARG ROOT_PASSWORD="password"
-RUN echo "root:$ROOT_PASSWORD" | chpasswd
+# --- Install PyTorch ---
+COPY requirements.txt requirements.txt
+RUN pip3 install --no-cache-dir \
+    torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    rm -f requirements.txt
+COPY docker/jupyter/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 
