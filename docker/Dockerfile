@@ -24,22 +24,6 @@ RUN apt install -y \
     libffi-dev libssl-dev \
     zlib1g-dev liblzma-dev \
     libbz2-dev libreadline-dev libsqlite3-dev && \
-    wget https://www.python.org/ftp/python/3.9.9/Python-3.9.9.tar.xz && \
-    tar xJf Python-3.9.9.tar.xz && \
-    cd Python-3.9.9 && \
-    ./configure && \
-    make && make install && \
-    cd ../ && \
-    python3 -m pip install --upgrade pip
-
-# --- Install Python ---
-RUN apt update -y && apt upgrade -y
-RUN apt install -y \
-    tk-dev \
-    build-essential \
-    libffi-dev libssl-dev \
-    zlib1g-dev liblzma-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev && \
     apt autoremove -y && \
     apt clean -y && \
     rm -rf /var/lib/apt/lists/* && \

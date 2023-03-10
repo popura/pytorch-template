@@ -8,12 +8,12 @@ services:
     tty: true
     restart: always
     container_name: pytorch-template
-    hostname: pytorch-template
+    hostname: pytorch-template-host
     environment:
       - TZ=Asia/Tokyo
       - JUPYTER_PORT=8888
     volumes:
-      - .:/image-developer
+      - .:/pytorch-template
     ports:
       - 8888:8888
     deploy:
