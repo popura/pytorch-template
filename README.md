@@ -16,6 +16,16 @@
       ```
         docker compose up -d
       ```
+  1. Run bash inside of the container
+      
+      ```
+        docker compose exec <project_name> /bin/bash
+      ```
+  1. Install dependent packages by Poetry
+  
+      ```
+        poetry install
+      ```
   Note that all changes in the docker container will be deleted when you exit docker container. 
 
 # Using poetry

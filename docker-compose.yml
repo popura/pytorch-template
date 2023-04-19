@@ -5,6 +5,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      args:
+          PROJECT_NAME: pytorch-template
+          PYTHON_VERSION: 3.9.11
     tty: true
     restart: always
     container_name: pytorch-template

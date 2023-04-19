@@ -1,12 +1,17 @@
 FROM nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04
-MAINTAINER Yuma.K
+LABEL maintainer="Yuma Kinoshita"
+
+ARG PROJECT_NAME=pytorch-template
+ARG PYTHON_VERSION=3.9.11
+ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
+ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
 # --- Install Packages with Apt ---
-RUN apt update -y && apt upgrade -y
-RUN apt install -y \
+RUN apt update -y && apt upgrade -y --fix-missing
+RUN apt install -y --fix-missing \
     sudo ssh \
     build-essential \
     zsh tmux make zip unzip git curl wget vim tree htop \
@@ -28,21 +33,20 @@ RUN apt install -y \
     apt clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/src/*
-RUN wget https://www.python.org/ftp/python/3.9.11/Python-3.9.11.tar.xz && \
-    tar xJf Python-3.9.11.tar.xz && \
-    cd Python-3.9.11 && \
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
+    tar xJf Python-${PYTHON_VERSION}.tar.xz && \
+    cd Python-${PYTHON_VERSION} && \
     ./configure && \
     make && make install && \
     cd ../ && \
-    python3 -m pip install --upgrade pip && \
-    rm -rf Python-3.9.11.tar.xz && \
-    rm -rf Python-3.9.11
+    python3 -m pip install --upgrade pip setuptools requests && \
+    python3 -m pip install poetry && \
+    rm -rf Python-${PYTHON_VERSION}.tar.xz && \
+    rm -rf Python-${PYTHON_VERSION}
 
-# --- Install PyTorch ---
-COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir \
-    torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-RUN pip3 install --no-cache-dir -r requirements.txt && \
-    rm -f requirements.txt
-COPY docker/jupyter/jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
+WORKDIR ${APPLICATION_DIRECTORY}
+COPY pyproject.toml poetry.toml poetry.lock* .
+RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "ture" && poetry install || echo "skip to run poetry install."
+RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "true" && mv ${APPLICATION_DIRECTORY}/.venv ${HOME}/.venv || echo "skip to move .venv."
+COPY docker/jupyter/jupyter_notebook_config.py /${HOME}/.jupyter/jupyter_notebook_config.py
 
