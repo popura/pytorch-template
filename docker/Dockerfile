@@ -9,28 +9,32 @@ ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
+# --- Change repository ---
+# RUN sed -i.org -e 's|archive.ubuntu.com|ubuntutym.u-toyama.ac.jp|g' /etc/apt/sources.list && \
+#     apt-get clean
+
 # --- Install Packages with Apt ---
-RUN apt update -y && apt upgrade -y --fix-missing
-RUN apt install -y --fix-missing \
+RUN apt-get update -y && apt-get upgrade -y --fix-missing
+RUN apt-get install -y --fix-missing \
     sudo ssh \
     build-essential \
     zsh tmux make zip unzip git curl wget vim tree htop \
     graphviz && \
-    apt autoremove -y && \
-    apt clean -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/src/*
 
 # --- Install Python ---
-RUN apt update -y && apt upgrade -y
-RUN apt install -y \
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y \
     tk-dev \
     build-essential \
     libffi-dev libssl-dev \
     zlib1g-dev liblzma-dev \
     libbz2-dev libreadline-dev libsqlite3-dev && \
-    apt autoremove -y && \
-    apt clean -y && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/src/*
 RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
