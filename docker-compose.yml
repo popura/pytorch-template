@@ -7,7 +7,7 @@ services:
       dockerfile: ./docker/Dockerfile
       args:
           PROJECT_NAME: pytorch-template
-          PYTHON_VERSION: 3.9.11
+          PYTHON_VERSION: 3.9.16
     tty: true
     restart: always
     container_name: pytorch-template
