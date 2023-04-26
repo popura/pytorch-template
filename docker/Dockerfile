@@ -46,12 +46,9 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     cd ../ && \
     python3 -m pip install --upgrade pip setuptools requests && \
     python3 -m pip install poetry && \
+    python3 -m pip install jupyter && \
     rm -rf Python-${PYTHON_VERSION}.tar.xz && \
     rm -rf Python-${PYTHON_VERSION}
-
-# --- Install jupyter ---
-RUN python3 -m pip install jupyter
-COPY docker/jupyter/jupyter.sh ${HOME}/jupyter.sh
 
 WORKDIR ${APPLICATION_DIRECTORY}
 COPY pyproject.toml poetry.toml poetry.lock* .

@@ -29,5 +29,4 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-#     command: jupyter notebook --allow-root
 
