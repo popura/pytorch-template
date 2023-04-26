@@ -17,10 +17,8 @@ ENV TZ=Asia/Tokyo
 # --- Install Packages with Apt ---
 RUN apt-get update -y && apt-get upgrade -y --fix-missing
 RUN apt-get install -y --fix-missing \
-    sudo ssh \
     build-essential \
-    zsh tmux make zip unzip git curl wget vim tree htop \
-    graphviz && \
+    zip unzip curl wget vim tree graphviz && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
