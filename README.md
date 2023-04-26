@@ -21,12 +21,30 @@
       ```
         docker compose exec <project_name> /bin/bash
       ```
-  1. Install dependent packages by Poetry
+  1. Install dependent packages by Poetry (This process only needs to be done once)
   
       ```
         poetry install
       ```
   Note that all changes in the docker container will be deleted when you exit docker container. 
+
+# Running Jupyter
+  1. Run a docker container
+  
+    ```
+      docker compose up -d
+    ```
+  1. Run bash inside of the container
+
+    ```
+      docker compose exec <project_name> /bin/bash
+    ```
+  1. Run `docker/run_jupyter.sh`
+
+    ```
+      ./docker/run_jupyter.sh
+    ```
+  1. When you write and run your scripts, you need to choose the kernel *project_name*
 
 # Using poetry
   1. Change variables in `pyproject.toml` as needed
@@ -49,17 +67,4 @@
   1. For developing, add source files into `src` directory
   1. For testing, add test codes into `test` directory
   1. For evaluation, add script files into `scripts` directory
-
-# Caution
-  - To access a jupyter server from other computers, you will neeed
-  
-     ```
-     (poetry run) jupyter notebook --generate-config
-     ```
-     
-  - and set a parameter `c.NotebookApp.ip` in `~/.jupyter/jupyter_notebook_config.py` as
-
-     ```
-     c.NotebookApp.ip = '0.0.0.0'
-     ```
 

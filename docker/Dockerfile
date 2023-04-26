@@ -6,6 +6,7 @@ ARG PYTHON_VERSION=3.9.11
 ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
 ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
 
+ENV HOME=/root
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
@@ -48,9 +49,12 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     rm -rf Python-${PYTHON_VERSION}.tar.xz && \
     rm -rf Python-${PYTHON_VERSION}
 
+# --- Install jupyter ---
+RUN python3 -m pip install jupyter
+COPY docker/jupyter/jupyter.sh ${HOME}/jupyter.sh
+
 WORKDIR ${APPLICATION_DIRECTORY}
 COPY pyproject.toml poetry.toml poetry.lock* .
 RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "ture" && poetry install || echo "skip to run poetry install."
 RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "true" && mv ${APPLICATION_DIRECTORY}/.venv ${HOME}/.venv || echo "skip to move .venv."
-COPY docker/jupyter/jupyter_notebook_config.py /${HOME}/.jupyter/jupyter_notebook_config.py
 
