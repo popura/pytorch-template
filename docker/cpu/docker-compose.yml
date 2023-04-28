@@ -3,11 +3,12 @@ version: '3'
 services:
   pytorch-template:
     build:
-      context: .
+      context: ../../
       dockerfile: ./docker/Dockerfile
       args:
-          PROJECT_NAME: pytorch-template
-          PYTHON_VERSION: 3.9.16
+        - BASE_IMAGE=ubuntu:20.04
+        - PROJECT_NAME=pytorch-template
+        - PYTHON_VERSION=3.9.16
     tty: true
     restart: always
     container_name: pytorch-template
@@ -19,7 +20,7 @@ services:
       - JUPYTER_NOTEBOOK_DIR=/pytorch-template
       - PROJECT_NAME=pytorch-template
     volumes:
-      - .:/pytorch-template
+      - ../../:/pytorch-template
     ports:
       - 8888:8888
     deploy:

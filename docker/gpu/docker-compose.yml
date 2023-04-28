@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  pytorch-template:
+    build:
+      context: ../../
+      dockerfile: ./docker/Dockerfile
+      args:
+        - PROJECT_NAME=pytorch-template
+        - PYTHON_VERSION=3.9.16
+    tty: true
+    restart: always
+    container_name: pytorch-template
+    hostname: pytorch-template-host
+    environment:
+      - TZ=Asia/Tokyo
+      - JUPYTER_PORT=8888
+      - JUPYTER_IP=0.0.0.0
+      - JUPYTER_NOTEBOOK_DIR=/pytorch-template
+      - PROJECT_NAME=pytorch-template
+    volumes:
+      - ../../:/pytorch-template
+    ports:
+      - 8888:8888
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
