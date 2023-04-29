@@ -9,3 +9,7 @@ for idx in range(device_num):
     print(f"cuda:{idx}, {torch.cuda.get_device_name(idx)}")
 
 print("end")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5fa0a532c54cbae67f18ebb19d303e9c862bf757

@@ -1,7 +1,7 @@
 # PyTorch Template
 
 # Dependencies
-- (For docker) rootless docker
+- Docker
 
 # Using docker
   1. Change variables in `docker-compose.yml` as needed
