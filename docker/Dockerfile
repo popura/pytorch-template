@@ -48,8 +48,8 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     python3 -m pip install jupyter && \
     rm -rf Python-${PYTHON_VERSION}.tar.xz && \
     rm -rf Python-${PYTHON_VERSION} && \
-    ln -s /usr/local/bin/python3.9 /usr/local/bin/python && \
-    ln -s /usr/local/bin/python3.9-config /usr/local/bin/python-config
+    ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/local/bin/python3-config /usr/local/bin/python-config
 
 WORKDIR ${APPLICATION_DIRECTORY}
 COPY pyproject.toml poetry.toml poetry.lock* .
