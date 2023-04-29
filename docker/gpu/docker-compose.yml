@@ -9,6 +9,8 @@ services:
         - BASE_IMAGE=nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
         - PROJECT_NAME=pytorch-template
         - PYTHON_VERSION=3.9.16
+        - UID=${HOST_UID-1000}
+        - GID=${HOST_GID-1000}
     tty: true
     restart: always
     container_name: pytorch-template

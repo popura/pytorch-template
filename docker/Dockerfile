@@ -3,6 +3,10 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="Yuma Kinoshita"
 
 ARG PROJECT_NAME=pytorch-template
+ARG USER_NAME=developer
+ARG GROUP_NAME=developers
+ARG UID=1000
+ARG GID=1000
 ARG PYTHON_VERSION=3.9.11
 ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
 ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
@@ -50,8 +54,13 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     ln -s /usr/local/bin/python3 /usr/local/bin/python && \
     ln -s /usr/local/bin/python3-config /usr/local/bin/python-config
 
+# --- Add user. Without this, following process is executed as admin. ---
+RUN groupadd -g ${GID} ${GROUP_NAME} && \
+    useradd -ms /bin/sh -u ${UID} -g ${GID} ${USER_NAME}
+
+USER ${USER_NAME}
 WORKDIR ${APPLICATION_DIRECTORY}
-COPY pyproject.toml poetry.toml poetry.lock* .
+COPY --chown=${UID}:${GID} pyproject.toml poetry.toml poetry.lock* .
 RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "ture" && poetry install || echo "skip to run poetry install."
 RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "true" && mv ${APPLICATION_DIRECTORY}/.venv ${HOME}/.venv || echo "skip to move .venv."
 
