@@ -1,4 +1,5 @@
-FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+ARG BASE_IMAGE=ubuntu20.04
+FROM ${BASE_IMAGE}
 LABEL maintainer="Yuma Kinoshita"
 
 ARG PROJECT_NAME=pytorch-template
@@ -46,7 +47,9 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
     python3 -m pip install poetry && \
     python3 -m pip install jupyter && \
     rm -rf Python-${PYTHON_VERSION}.tar.xz && \
-    rm -rf Python-${PYTHON_VERSION}
+    rm -rf Python-${PYTHON_VERSION} && \
+    ln -s /usr/local/bin/python3.9 /usr/local/bin/python && \
+    ln -s /usr/local/bin/python3.9-config /usr/local/bin/python-config
 
 WORKDIR ${APPLICATION_DIRECTORY}
 COPY pyproject.toml poetry.toml poetry.lock* .

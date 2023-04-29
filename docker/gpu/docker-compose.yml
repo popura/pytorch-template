@@ -6,6 +6,7 @@ services:
       context: ../../
       dockerfile: ./docker/Dockerfile
       args:
+        - BASE_IMAGE=nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
         - PROJECT_NAME=pytorch-template
         - PYTHON_VERSION=3.9.16
     tty: true

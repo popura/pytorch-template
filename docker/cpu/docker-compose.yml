@@ -23,11 +23,4 @@ services:
       - ../../:/pytorch-template
     ports:
       - 8888:8888
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
 
