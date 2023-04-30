@@ -11,7 +11,7 @@ ARG PYTHON_VERSION=3.9.11
 ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
 ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
 
-ENV HOME=/root
+ENV HOME=/home/${USER_NAME}
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
@@ -27,6 +27,7 @@ RUN apt-get install -y --fix-missing \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/local/src/*
 
 # --- Install Python ---
 RUN apt-get update -y && apt-get upgrade -y
@@ -56,7 +57,8 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
 
 # --- Add user. Without this, following process is executed as admin. ---
 RUN groupadd -g ${GID} ${GROUP_NAME} && \
-    useradd -ms /bin/sh -u ${UID} -g ${GID} ${USER_NAME}
+    useradd -ms /bin/sh -u ${UID} -g ${GID} ${USER_NAME} && \
+    mkdir -p ${HOME} && chown -R ${UID}:${GID} ${HOME}
 
 USER ${USER_NAME}
 WORKDIR ${APPLICATION_DIRECTORY}
