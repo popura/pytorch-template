@@ -20,8 +20,8 @@ ENV TZ=Asia/Tokyo
 #     apt-get clean
 
 # --- Install Packages with Apt ---
-RUN apt-get update -y && apt-get upgrade -y --fix-missing
-RUN apt-get install -y --fix-missing \
+RUN apt-get update -y && apt-get upgrade -y --fix-missing && \
+    apt-get install -y --fix-missing \
     build-essential \
     zip unzip curl wget vim tree graphviz && \
     apt-get autoremove -y && \
@@ -30,8 +30,8 @@ RUN apt-get install -y --fix-missing \
     rm -rf /usr/local/src/*
 
 # --- Install Python ---
-RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y \
+RUN apt-get update -y && apt-get upgrade -y && \
+    apt-get install -y \
     tk-dev \
     build-essential \
     libffi-dev libssl-dev \
