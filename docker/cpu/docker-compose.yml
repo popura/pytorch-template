@@ -17,8 +17,8 @@ services:
     hostname: pytorch-template-host
     environment:
       - TZ=Asia/Tokyo
-      - JUPYTER_PORT=8888
       - JUPYTER_IP=0.0.0.0
+      - JUPYTER_PORT=8888
       - JUPYTER_NOTEBOOK_DIR=/pytorch-template
       - PROJECT_NAME=pytorch-template
     volumes:
