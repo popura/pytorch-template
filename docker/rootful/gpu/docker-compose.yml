@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  pytorch-template:
+    build:
+      context: ../../../
+      dockerfile: ./docker/rootful/Dockerfile
+      args:
+        - BASE_IMAGE=nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+        - PROJECT_NAME=pytorch-template
+        - PYTHON_VERSION=3.9.16
+        - UID=${HOST_UID-1000}
+        - GID=${HOST_GID-1000}
+    tty: true
+    restart: always
+    environment:
+      - TZ=Asia/Tokyo
+      - JUPYTER_PORT=8888
+      - JUPYTER_IP=0.0.0.0
+      - JUPYTER_NOTEBOOK_DIR=/pytorch-template
+      - PROJECT_NAME=pytorch-template
+    volumes:
+      - ../../../:/pytorch-template
+    ports:
+      - 8888:8888
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
