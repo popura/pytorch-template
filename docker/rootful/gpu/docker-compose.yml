@@ -23,6 +23,7 @@ services:
       - ../../../:/pytorch-template
     ports:
       - 8888:8888
+    command: /bin/bash
     deploy:
       resources:
         reservations:
