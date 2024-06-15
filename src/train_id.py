@@ -5,6 +5,28 @@ import pandas as pd
 from omegaconf import OmegaConf, DictConfig
 
 
+
+def print_config(cfg: DictConfig) -> None:
+    print('-----Parameters-----')
+    print(OmegaConf.to_yaml(cfg))
+    print('--------------------')
+    return
+
+
+def is_same_config(cfg1: DictConfig, cfg2: DictConfig) -> bool:
+    """Compare cfg1 with cfg2.
+
+    Args:
+        cfg1: Config
+        cfg2: Config
+
+    Returns:
+        True if cfg1 == cfg2 else False
+
+    """
+    return cfg1 == cfg2
+
+
 def generate_train_id(cfg: DictConfig) -> str:
     """Generate unique ID for a training condition specified by cfg.
 

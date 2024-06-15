@@ -1,14 +1,12 @@
-version: '3'
-
 services:
   pytorch-template:
     build:
       context: ../../../
       dockerfile: ./docker/rootful/Dockerfile
       args:
-        - BASE_IMAGE=nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+        - BASE_IMAGE=nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
         - PROJECT_NAME=pytorch-template
-        - PYTHON_VERSION=3.9.16
+        - PYTHON_VERSION=3.11.9
         - UID=${HOST_UID-1000}
         - GID=${HOST_GID-1000}
     tty: true

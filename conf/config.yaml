@@ -1,10 +1,29 @@
 defaults:
+  - _self_
   - dataset: mnist
-  - model: vgg2d
+  - model: simple_cnn
   - optimizer: adam
   - lr_scheduler: multi_step
 seed: null
-loader: 
+dataloader: 
   batch_size: 64
   num_workers: 0
 epoch: 200
+optuna:
+  direction: maximize
+  n_trials: 100
+  sampler:
+    _target_: optuna.samplers.TPESampler
+hydra:
+  run:
+    dir: ./
+  output_subdir: null
+  job_logging:
+    version: 1
+    handlers:
+      console:
+        class: logging.StreamHandler
+        stream: ext://sys.stdout
+    root:
+      handlers: [console]
+    disable_existing_loggers: false

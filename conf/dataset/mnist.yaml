@@ -1,4 +1,18 @@
 name: mnist
-path: ./data/
-transforms: null
-download: True
+train:
+  params:
+    root: ./data/
+    train: true
+    download: true
+  transform:
+    to_image:
+    to_dtype:
+    normalize:
+      mean:
+        - 0.1307
+      std:
+        - 0.3081
+random_split:
+  lengths:
+    - 0.7
+    - 0.3
