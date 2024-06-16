@@ -1,11 +1,16 @@
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
 import torch
 
 
 class DataPipeline(torch.utils.data.Dataset):
-    def __init__(self, ds: torch.utils.data.Dataset, transforms=None):
+    def __init__(self,
+                 ds: torch.utils.data.Dataset,
+                 static_transforms=None,
+                 dynamic_transforms=None):
         self.ds = ds
-        self.transforms = transforms
+        self.static_transforms = static_transforms
+        self.dynamic_transforms = dynamic_transforms
 
     def __getitem__(self, index):
         raise NotImplementedError()
@@ -64,3 +69,4 @@ class Zip(Transform):
 class Identity(Transform):
     def __call__(self, sample):
         return sample
+
