@@ -2,10 +2,22 @@ from abc import ABCMeta, abstractmethod
 import torch
 
 
-class Transform(metaclass = ABCMeta):
-    @abstractmethod
-    def __call__(self, *args):
+class DataPipeline(torch.utils.data.Dataset):
+    def __init__(self, ds: torch.utils.data.Dataset, transforms=None):
+        self.ds = ds
+        self.transforms = transforms
+
+    def __getitem__(self, index):
         raise NotImplementedError()
+    
+    def __len__(self):
+        return len(self.ds)
+
+
+class Transform(metaclass=ABCMeta):
+    @abstractmethod
+    def __call__(self, x):
+        pass
 
 
 class Compose(Transform):
@@ -24,10 +36,10 @@ class Compose(Transform):
     def __init__(self, transforms):
         self.transforms = transforms
 
-    def __call__(self, waveform):
+    def __call__(self, sample):
         for t in self.transforms:
-            waveform = t(waveform)
-        return waveform
+            sample = t(sample)
+        return sample
 
     def __repr__(self):
         format_string = self.__class__.__name__ + '('
@@ -50,5 +62,5 @@ class Zip(Transform):
 
 
 class Identity(Transform):
-    def __call__(self, x):
-        return x
+    def __call__(self, sample):
+        return sample

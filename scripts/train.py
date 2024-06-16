@@ -72,6 +72,7 @@ def main(cfg: DictConfig) -> None:
 
     # DNNを作る
     net = SimpleCNN(**cfg.model.params)
+    # net = torch.compile(net)
     
     # ネットワークの構造やパラメータ数，必要なメモリ量などを表示
     input_size = train_set[0][0].shape
