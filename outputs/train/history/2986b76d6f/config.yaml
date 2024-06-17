@@ -1,7 +1,7 @@
 seed: null
 dataloader:
   batch_size: 64
-  num_workers: 0
+  num_workers: 4
   pin_memory: true
 epoch: 200
 optuna:

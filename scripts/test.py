@@ -9,6 +9,7 @@ from torchvision.transforms import v2
 
 from omegaconf import OmegaConf
 
+from src.data_pipeline import DataPipeline
 from src.model import SimpleCNN
 from src.trainer import AccuracyEvaluator
 from src.train_id import print_config
@@ -38,11 +39,11 @@ def main(
         root="./data/",
         train=False,
         download=True,
-        transform=transforms
     )
     classes = dataset.classes
+    datapipe = DataPipeline(dataset, static_transforms=transforms, dynamic_transforms=None, max_cache_size=0)
     test_loader = torch.utils.data.DataLoader(
-        dataset,
+        datapipe,
         shuffle=False,
         batch_size=64,
         num_workers=0
@@ -72,7 +73,7 @@ if __name__ == "__main__":
                         help='Sets random seed')
     parser.add_argument('--remove_untrained_id', action="store_true",
                         help='If True, history directories in history_dir'
-                        +'that do not contain encoder and classifier will be removed')
+                        +'that do not contain model checkpoints will be removed')
     parser.add_argument('--skip_tested', action="store_true",
                         help='If True, train IDs whose resulting directories already exist'
                         +'will be skipped')

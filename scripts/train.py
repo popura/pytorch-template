@@ -11,7 +11,7 @@ import torchinfo
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from data_pipeline import DataPipeline
+from src.data_pipeline import DataPipeline
 from src.model import SimpleCNN
 from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
 from src.train_id import print_config, generate_train_id, is_same_config
@@ -50,10 +50,9 @@ def main(cfg: DictConfig) -> None:
         v2.Normalize(**cfg.dataset.train.transform.normalize),
     ])
     dataset = torchvision.datasets.MNIST(
-        **cfg.dataset.train.params,
-        transform=transforms,
+        **cfg.dataset.train.params
     )
-    datapipe = DataPipeline(dataset, static_transforms=None, dynamic_transforms=None, max_cache_size=len(dataset))
+    datapipe = DataPipeline(dataset, static_transforms=transforms, dynamic_transforms=None, max_cache_size=len(dataset))
     train_set, val_set = torch.utils.data.random_split(
         datapipe,
         cfg.dataset.random_split.lengths

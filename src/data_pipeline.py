@@ -61,7 +61,7 @@ class DataPipeline(torch.utils.data.Dataset):
         else:
             x = self.ds[idx]
             if self.static_transforms is not None:
-                x = self.static_transforms()
+                x = self.static_transforms(x)
             if self.cache_size + 1 < self.max_cache_size:
                 self.cache[idx] = numpize_sample(x)
                 self.cache_size += 1

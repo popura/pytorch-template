@@ -1,0 +1,51 @@
+seed: null
+dataloader:
+  batch_size: 64
+  num_workers: 16
+  pin_memory: true
+epoch: 200
+optuna:
+  direction: maximize
+  n_trials: 100
+  sampler:
+    _target_: optuna.samplers.TPESampler
+dataset:
+  name: mnist
+  train:
+    params:
+      root: ./data/
+      train: true
+      download: true
+    transform:
+      to_image: null
+      to_dtype: null
+      normalize:
+        mean:
+        - 0.1307
+        std:
+        - 0.3081
+  random_split:
+    lengths:
+    - 0.7
+    - 0.3
+model:
+  name: simple_cnn
+  params:
+    num_classes: 10
+optimizer:
+  name: adam
+  params:
+    lr: 0.001
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0
+    amsgrad: false
+lr_scheduler:
+  name: multi_step
+  params:
+    milestones:
+    - 0.5
+    - 0.75
+    gamma: 0.1
