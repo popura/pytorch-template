@@ -9,6 +9,7 @@ services:
         - PYTHON_VERSION=3.11.9
     tty: true
     restart: always
+    shm_size: 16g
     environment:
       - TZ=Asia/Tokyo
       - JUPYTER_PORT=8888
