@@ -11,6 +11,7 @@ import torchinfo
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+from data_pipeline import DataPipeline
 from src.model import SimpleCNN
 from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
 from src.train_id import print_config, generate_train_id, is_same_config
@@ -52,8 +53,9 @@ def main(cfg: DictConfig) -> None:
         **cfg.dataset.train.params,
         transform=transforms,
     )
+    datapipe = DataPipeline(dataset, static_transforms=None, dynamic_transforms=None, max_cache_size=len(dataset))
     train_set, val_set = torch.utils.data.random_split(
-        dataset,
+        datapipe,
         cfg.dataset.random_split.lengths
     )
     classes = dataset.classes
