@@ -51,22 +51,22 @@ class DataPipeline(torch.utils.data.Dataset):
         self.dynamic_transforms = dynamic_transforms
 
         self.cache = Manager().dict()
-        self.cache_size = max_cache_size if max_cache_size is not None else len(ds)
-        self.max_cache_size = max_cache_size
+        self.cache_size = 0
+        self.max_cache_size = max_cache_size if max_cache_size is not None else len(ds)
 
     def __getitem__(self, idx):
         if idx in self.cache:
-            x = self.cache[idx].clone()  # 共有テンソルをコピー
+            x = self.cache[idx] # 共有テンソルをコピー
             x = tensorize_sample(x)
         else:
             x = self.ds[idx]
             if self.static_transforms is not None:
-                x = self.static_transforms(x)
+                x = self.static_transforms(*x)
             if self.cache_size + 1 < self.max_cache_size:
                 self.cache[idx] = numpize_sample(x)
                 self.cache_size += 1
         if self.dynamic_transforms is not None:
-            x = self.dynamic_transforms(x)
+            x = self.dynamic_transforms(*x)
         return x
 
     def __len__(self):

@@ -222,5 +222,5 @@ class AccuracyEvaluator(Evaluator):
         total_accuracy = sum(self.class_correct) / sum(self.class_total)
 
         hist_dict = {'total acc': total_accuracy}
-        hist_dict = dict(**hist_dict, **{self.classes[i]: class_accuracy[i] for i in range(len(self.classes))})
+        hist_dict = dict(**hist_dict, **{str(self.classes[i]): class_accuracy[i] for i in range(len(self.classes))})
         return hist_dict
