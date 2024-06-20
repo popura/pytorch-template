@@ -15,7 +15,7 @@ from src.data_pipeline import DataPipeline
 from src.model import SimpleCNN
 from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
 from src.train_id import print_config, generate_train_id, is_same_config
-from src.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger
+from src.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
 from src.util import set_random_seed
 
 
@@ -101,7 +101,11 @@ def main(cfg: DictConfig) -> None:
             directory=p,
             name=lambda x: "history.pth",
             trigger=IntervalTrigger(period=1)),
-        HistoryLogger(trigger=IntervalTrigger(period=1), print_func=print)
+        HistoryLogger(trigger=IntervalTrigger(period=1), print_func=print),
+        LearningCurvePlotter(
+            directory=p,
+            trigger=IntervalTrigger(period=1),
+        )
     ]
 
     # 学習

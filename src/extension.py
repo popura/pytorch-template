@@ -279,3 +279,34 @@ class HistoryLogger(Extension):
     def finalize(self, trainer: Trainer) -> typing.NoReturn:
         elapsed_time = time.time() - self._start_time
         self.print_func(f"Total training time: {int(elapsed_time/60/60):02d} hour {elapsed_time/60%60:02.2f} min")
+
+
+class LearningCurvePlotter(Extension):
+    """Extension plotting learning curves.
+
+    Args:
+        directory: A directory where learning curves will be saved.
+        trigger:
+    """
+
+    def __init__(self, directory: Path, trigger: Trigger) -> typing.NoReturn:
+        super().__init__(trigger)
+        directory.mkdir(parents=True, exist_ok=True)
+        self.directory = directory
+        self.trigger = trigger
+    
+    def __call__(self, trainer: Trainer) -> typing.NoReturn:
+        import matplotlib.pyplot as plt
+        history = trainer.history
+        train_losses = [h["loss"] for h in history["train"]]
+        val_losses = [h["loss"] for h in history["validation"]]
+        epoch = [h["epoch"] for h in history["train"]]
+
+        plt.plot(epoch, train_losses, label="train")
+        plt.plot(epoch, val_losses, label="validation")
+        plt.xlabel("epoch")
+        plt.ylabel("loss")
+        plt.legend()
+        plt.savefig(str(self.directory / "learning_curve.png"))
+        plt.clf()
+        plt.close()
