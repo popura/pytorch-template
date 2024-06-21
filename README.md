@@ -3,23 +3,19 @@
 # Dependencies
 - (For docker) rootless/rootful docker
 
-# Using docker
-  1. If you can use rootless docker,
-  use `Dockerfile` and `docker-compose.yml` in `./docker/rootless`.
-  Otherwise, use those in `./docker/rootful`.
-  `gpu` folder is for GPU users.
-  1. Change variables in `docker-compose.yml` as needed.
+# Using rootless docker
+  1. Change variables in `./docker/docker-compose.yml` as needed.
   Especially, you may substitute `pytorch-template` in the file with your project name.
-  1. Add scripts into `./docker/Dockerfile` as needed.
+  1. Add scripts into `./docker/rootless/Dockerfile` as needed.
   It will works without any changes.
   1. Change variables in `pyproject.toml` as needed.
   Especially, you may change `name` and `authors` in the file.
-  1. Add scripts into `./docker/Dockerfile` as needed.
-  1. Perform the following command on a directory that has your `docker-compose.yml` for building your docker image
+  1. To build your Docker image, run the following command in the directory containing the `docker-compose.yml` file:
 
       ```
         docker compose build
       ```
+    
   1. Run a docker container via the following command 
 
       ```
@@ -51,6 +47,15 @@
       ```
 
   Note that all changes in the docker container will be deleted when you exit docker container. 
+
+### GPU Support
+By default, `docker-compose.gpu.yml` overrides `docker-compose.yml` to enable GPU calculations.
+You can modify this behavior by editing the environment variable in `./docker/.env`.
+
+### Rootful docker
+If you're unable to use rootless Docker,
+you'll need to override the default settings with `docker-compose.rootful.yml`.
+Also, you may add scripts into `./docker/rootful/Dockerfile`.
 
 # Running Jupyter
   1. Run a docker container

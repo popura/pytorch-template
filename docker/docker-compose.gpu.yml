@@ -1,0 +1,13 @@
+services:
+  pytorch-template:
+    build:
+      args:
+        - BASE_IMAGE=nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
