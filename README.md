@@ -49,8 +49,12 @@
   Note that all changes in the docker container will be deleted when you exit docker container. 
 
 ### GPU Support
-By default, `docker-compose.gpu.yml` overrides `docker-compose.yml` to enable GPU calculations.
-You can modify this behavior by editing the environment variable in `./docker/.env`.
+To enable GPU calculations, you can override `docker-compose.yml` with `docker-compose.gpu.yml`
+by creating `./docker/.env` file as follows:
+
+    ```
+        COMPOSE_FILE=docker-compose.yml:docker-compose.gpu.yml
+    ```
 
 ### Rootful docker
 If you're unable to use rootless Docker,
