@@ -17,7 +17,7 @@ services:
       - JUPYTER_NOTEBOOK_DIR=/pytorch-template
       - PROJECT_NAME=pytorch-template
     volumes:
-      - ../../:/pytorch-template
+      - ../:/pytorch-template
     ports:
       - 8888:8888
     command: /bin/bash
