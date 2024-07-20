@@ -1,5 +1,5 @@
 services:
-  pytorch-template:
+  tokai-ml-cifar10:
     build:
       args:
         - BASE_IMAGE=nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04

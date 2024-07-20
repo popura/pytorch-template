@@ -12,7 +12,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from src.data_pipeline import DataPipeline
-from src.model import SimpleCNN
+from src.model import SimpleCNN, ResNet
 from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
 from src.train_id import print_config, generate_train_id, is_same_config
 from src.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
@@ -46,13 +46,19 @@ def main(cfg: DictConfig) -> None:
     # 学習・検証データセットのインスタンスを作る
     transforms = v2.Compose([
         v2.ToImage(),
+        v2.RandomResizedCrop(**cfg.dataset.train.transform.random_resized_crop),
+        v2.RandomHorizontalFlip(**cfg.dataset.train.transform.random_horizontal_flip),
         v2.ToDtype(torch.float32, scale=True),
         v2.Normalize(**cfg.dataset.train.transform.normalize),
     ])
-    dataset = torchvision.datasets.MNIST(
+    random_transforms = v2.Compose([
+        v2.RandomResizedCrop(**cfg.dataset.train.transform.random_resized_crop),
+        v2.RandomHorizontalFlip(**cfg.dataset.train.transform.random_horizontal_flip),
+    ])
+    dataset = torchvision.datasets.CIFAR10(
         **cfg.dataset.train.params
     )
-    datapipe = DataPipeline(dataset, static_transforms=transforms, dynamic_transforms=None, max_cache_size=len(dataset))
+    datapipe = DataPipeline(dataset, static_transforms=transforms, dynamic_transforms=random_transforms, max_cache_size=len(dataset))
     train_set, val_set = torch.utils.data.random_split(
         datapipe,
         cfg.dataset.random_split.lengths
@@ -72,8 +78,8 @@ def main(cfg: DictConfig) -> None:
     )
 
     # DNNを作る
-    net = SimpleCNN(**cfg.model.params)
-    # net = torch.compile(net)
+    #net = SimpleCNN(**cfg.model.params)
+    net = ResNet('ResNet18').to(device)
     
     # ネットワークの構造やパラメータ数，必要なメモリ量などを表示
     input_size = train_set[0][0].shape

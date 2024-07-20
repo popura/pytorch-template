@@ -1,0 +1,476 @@
+-----Parameters-----
+seed: null
+dataloader:
+  batch_size: 64
+  num_workers: 16
+  pin_memory: true
+epoch: 200
+optuna:
+  direction: maximize
+  n_trials: 100
+  sampler:
+    _target_: optuna.samplers.TPESampler
+dataset:
+  name: cifar10
+  train:
+    params:
+      root: ./data/
+      train: true
+      download: true
+    transform:
+      to_image: null
+      random_resized_crop:
+        size:
+        - 32
+        - 32
+        antialias: true
+      random_horizontal_flip:
+        p: 0.5
+      to_dtype: null
+      normalize:
+        mean:
+        - 0.4914
+        - 0.4822
+        - 0.4465
+        std:
+        - 0.2023
+        - 0.1994
+        - 0.201
+  random_split:
+    lengths:
+    - 0.9
+    - 0.1
+model:
+  name: simple_cnn
+  params:
+    num_classes: 10
+optimizer:
+  name: adam
+  params:
+    lr: 0.001
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0
+    amsgrad: false
+lr_scheduler:
+  name: multi_step
+  params:
+    milestones:
+    - 0.5
+    - 0.75
+    gamma: 0.1
+
+--------------------
+Files already downloaded and verified
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+ResNet                                   [64, 10]                  --
+├─Conv2d: 1-1                            [64, 64, 32, 32]          1,728
+├─BatchNorm2d: 1-2                       [64, 64, 32, 32]          128
+├─Sequential: 1-3                        [64, 64, 32, 32]          --
+│    └─BasicBlock: 2-1                   [64, 64, 32, 32]          --
+│    │    └─Conv2d: 3-1                  [64, 64, 32, 32]          36,864
+│    │    └─BatchNorm2d: 3-2             [64, 64, 32, 32]          128
+│    │    └─Conv2d: 3-3                  [64, 64, 32, 32]          36,864
+│    │    └─BatchNorm2d: 3-4             [64, 64, 32, 32]          128
+│    │    └─Sequential: 3-5              [64, 64, 32, 32]          --
+│    └─BasicBlock: 2-2                   [64, 64, 32, 32]          --
+│    │    └─Conv2d: 3-6                  [64, 64, 32, 32]          36,864
+│    │    └─BatchNorm2d: 3-7             [64, 64, 32, 32]          128
+│    │    └─Conv2d: 3-8                  [64, 64, 32, 32]          36,864
+│    │    └─BatchNorm2d: 3-9             [64, 64, 32, 32]          128
+│    │    └─Sequential: 3-10             [64, 64, 32, 32]          --
+├─Sequential: 1-4                        [64, 128, 16, 16]         --
+│    └─BasicBlock: 2-3                   [64, 128, 16, 16]         --
+│    │    └─Conv2d: 3-11                 [64, 128, 16, 16]         73,728
+│    │    └─BatchNorm2d: 3-12            [64, 128, 16, 16]         256
+│    │    └─Conv2d: 3-13                 [64, 128, 16, 16]         147,456
+│    │    └─BatchNorm2d: 3-14            [64, 128, 16, 16]         256
+│    │    └─Sequential: 3-15             [64, 128, 16, 16]         8,448
+│    └─BasicBlock: 2-4                   [64, 128, 16, 16]         --
+│    │    └─Conv2d: 3-16                 [64, 128, 16, 16]         147,456
+│    │    └─BatchNorm2d: 3-17            [64, 128, 16, 16]         256
+│    │    └─Conv2d: 3-18                 [64, 128, 16, 16]         147,456
+│    │    └─BatchNorm2d: 3-19            [64, 128, 16, 16]         256
+│    │    └─Sequential: 3-20             [64, 128, 16, 16]         --
+├─Sequential: 1-5                        [64, 256, 8, 8]           --
+│    └─BasicBlock: 2-5                   [64, 256, 8, 8]           --
+│    │    └─Conv2d: 3-21                 [64, 256, 8, 8]           294,912
+│    │    └─BatchNorm2d: 3-22            [64, 256, 8, 8]           512
+│    │    └─Conv2d: 3-23                 [64, 256, 8, 8]           589,824
+│    │    └─BatchNorm2d: 3-24            [64, 256, 8, 8]           512
+│    │    └─Sequential: 3-25             [64, 256, 8, 8]           33,280
+│    └─BasicBlock: 2-6                   [64, 256, 8, 8]           --
+│    │    └─Conv2d: 3-26                 [64, 256, 8, 8]           589,824
+│    │    └─BatchNorm2d: 3-27            [64, 256, 8, 8]           512
+│    │    └─Conv2d: 3-28                 [64, 256, 8, 8]           589,824
+│    │    └─BatchNorm2d: 3-29            [64, 256, 8, 8]           512
+│    │    └─Sequential: 3-30             [64, 256, 8, 8]           --
+├─Sequential: 1-6                        [64, 512, 4, 4]           --
+│    └─BasicBlock: 2-7                   [64, 512, 4, 4]           --
+│    │    └─Conv2d: 3-31                 [64, 512, 4, 4]           1,179,648
+│    │    └─BatchNorm2d: 3-32            [64, 512, 4, 4]           1,024
+│    │    └─Conv2d: 3-33                 [64, 512, 4, 4]           2,359,296
+│    │    └─BatchNorm2d: 3-34            [64, 512, 4, 4]           1,024
+│    │    └─Sequential: 3-35             [64, 512, 4, 4]           132,096
+│    └─BasicBlock: 2-8                   [64, 512, 4, 4]           --
+│    │    └─Conv2d: 3-36                 [64, 512, 4, 4]           2,359,296
+│    │    └─BatchNorm2d: 3-37            [64, 512, 4, 4]           1,024
+│    │    └─Conv2d: 3-38                 [64, 512, 4, 4]           2,359,296
+│    │    └─BatchNorm2d: 3-39            [64, 512, 4, 4]           1,024
+│    │    └─Sequential: 3-40             [64, 512, 4, 4]           --
+├─Linear: 1-7                            [64, 10]                  5,130
+==========================================================================================
+Total params: 11,173,962
+Trainable params: 11,173,962
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 35.55
+==========================================================================================
+Input size (MB): 0.79
+Forward/backward pass size (MB): 629.15
+Params size (MB): 44.70
+Estimated Total Size (MB): 674.63
+==========================================================================================
+-----Training Started-----
+epoch: 001/200 | loss: 1.9620 | val. loss: 1.8494 | val. total acc: 0.3276 | val. airplane: 0.2131 | val. automobile: 0.1992 | val. bird: 0.3214 | val. cat: 0.0701 | val. deer: 0.1274 | val. dog: 0.5953 | val. frog: 0.3866 | val. horse: 0.3540 | val. ship: 0.6429 | val. truck: 0.3293 | time: 00 hour 0.46 min | finish after: 01 hour 32.09 min
+epoch: 002/200 | loss: 1.8070 | val. loss: 1.7758 | val. total acc: 0.3462 | val. airplane: 0.1824 | val. automobile: 0.4531 | val. bird: 0.1936 | val. cat: 0.3970 | val. deer: 0.0870 | val. dog: 0.0837 | val. frog: 0.5148 | val. horse: 0.3460 | val. ship: 0.6687 | val. truck: 0.5289 | time: 00 hour 0.92 min | finish after: 01 hour 30.91 min
+epoch: 003/200 | loss: 1.6810 | val. loss: 1.7085 | val. total acc: 0.3774 | val. airplane: 0.5430 | val. automobile: 0.6914 | val. bird: 0.1823 | val. cat: 0.1486 | val. deer: 0.2251 | val. dog: 0.4553 | val. frog: 0.7081 | val. horse: 0.3540 | val. ship: 0.2560 | val. truck: 0.1916 | time: 00 hour 1.37 min | finish after: 01 hour 29.78 min
+epoch: 004/200 | loss: 1.5851 | val. loss: 1.5518 | val. total acc: 0.4502 | val. airplane: 0.4693 | val. automobile: 0.5898 | val. bird: 0.3872 | val. cat: 0.2420 | val. deer: 0.3163 | val. dog: 0.2821 | val. frog: 0.5404 | val. horse: 0.5980 | val. ship: 0.4444 | val. truck: 0.6168 | time: 00 hour 1.82 min | finish after: 01 hour 29.01 min
+epoch: 005/200 | loss: 1.5057 | val. loss: 1.4940 | val. total acc: 0.4666 | val. airplane: 0.4754 | val. automobile: 0.6641 | val. bird: 0.5357 | val. cat: 0.3376 | val. deer: 0.4140 | val. dog: 0.4280 | val. frog: 0.3215 | val. horse: 0.5360 | val. ship: 0.4980 | val. truck: 0.4391 | time: 00 hour 2.27 min | finish after: 01 hour 28.54 min
+epoch: 006/200 | loss: 1.4312 | val. loss: 1.4160 | val. total acc: 0.4960 | val. airplane: 0.5369 | val. automobile: 0.5820 | val. bird: 0.4568 | val. cat: 0.2696 | val. deer: 0.3482 | val. dog: 0.3735 | val. frog: 0.6410 | val. horse: 0.4640 | val. ship: 0.6468 | val. truck: 0.6208 | time: 00 hour 2.72 min | finish after: 01 hour 28.05 min
+epoch: 007/200 | loss: 1.3820 | val. loss: 1.3763 | val. total acc: 0.5142 | val. airplane: 0.4980 | val. automobile: 0.5293 | val. bird: 0.2650 | val. cat: 0.4055 | val. deer: 0.4841 | val. dog: 0.3794 | val. frog: 0.6805 | val. horse: 0.5100 | val. ship: 0.7341 | val. truck: 0.6627 | time: 00 hour 3.17 min | finish after: 01 hour 27.45 min
+epoch: 008/200 | loss: 1.3273 | val. loss: 1.3360 | val. total acc: 0.5252 | val. airplane: 0.6783 | val. automobile: 0.5703 | val. bird: 0.4398 | val. cat: 0.4756 | val. deer: 0.5499 | val. dog: 0.4708 | val. frog: 0.5247 | val. horse: 0.4760 | val. ship: 0.5198 | val. truck: 0.5549 | time: 00 hour 3.62 min | finish after: 01 hour 26.93 min
+epoch: 009/200 | loss: 1.2898 | val. loss: 1.3033 | val. total acc: 0.5294 | val. airplane: 0.6496 | val. automobile: 0.7285 | val. bird: 0.3477 | val. cat: 0.4459 | val. deer: 0.6582 | val. dog: 0.4358 | val. frog: 0.4241 | val. horse: 0.4940 | val. ship: 0.5615 | val. truck: 0.5649 | time: 00 hour 4.07 min | finish after: 01 hour 26.42 min
+epoch: 010/200 | loss: 1.2510 | val. loss: 1.2101 | val. total acc: 0.5798 | val. airplane: 0.5512 | val. automobile: 0.6055 | val. bird: 0.5282 | val. cat: 0.4883 | val. deer: 0.5987 | val. dog: 0.4377 | val. frog: 0.7298 | val. horse: 0.4880 | val. ship: 0.7183 | val. truck: 0.6507 | time: 00 hour 4.52 min | finish after: 01 hour 25.92 min
+-----Parameters-----
+seed: null
+dataloader:
+  batch_size: 256
+  num_workers: 16
+  pin_memory: true
+epoch: 200
+optuna:
+  direction: maximize
+  n_trials: 100
+  sampler:
+    _target_: optuna.samplers.TPESampler
+dataset:
+  name: cifar10
+  train:
+    params:
+      root: ./data/
+      train: true
+      download: true
+    transform:
+      to_image: null
+      random_resized_crop:
+        size:
+        - 32
+        - 32
+        antialias: true
+      random_horizontal_flip:
+        p: 0.5
+      to_dtype: null
+      normalize:
+        mean:
+        - 0.4914
+        - 0.4822
+        - 0.4465
+        std:
+        - 0.2023
+        - 0.1994
+        - 0.201
+  random_split:
+    lengths:
+    - 0.9
+    - 0.1
+model:
+  name: simple_cnn
+  params:
+    num_classes: 10
+optimizer:
+  name: adam
+  params:
+    lr: 0.001
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    weight_decay: 0
+    amsgrad: false
+lr_scheduler:
+  name: multi_step
+  params:
+    milestones:
+    - 0.5
+    - 0.75
+    gamma: 0.1
+
+--------------------
+Files already downloaded and verified
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+ResNet                                   [256, 10]                 --
+├─Conv2d: 1-1                            [256, 64, 32, 32]         1,728
+├─BatchNorm2d: 1-2                       [256, 64, 32, 32]         128
+├─Sequential: 1-3                        [256, 64, 32, 32]         --
+│    └─BasicBlock: 2-1                   [256, 64, 32, 32]         --
+│    │    └─Conv2d: 3-1                  [256, 64, 32, 32]         36,864
+│    │    └─BatchNorm2d: 3-2             [256, 64, 32, 32]         128
+│    │    └─Conv2d: 3-3                  [256, 64, 32, 32]         36,864
+│    │    └─BatchNorm2d: 3-4             [256, 64, 32, 32]         128
+│    │    └─Sequential: 3-5              [256, 64, 32, 32]         --
+│    └─BasicBlock: 2-2                   [256, 64, 32, 32]         --
+│    │    └─Conv2d: 3-6                  [256, 64, 32, 32]         36,864
+│    │    └─BatchNorm2d: 3-7             [256, 64, 32, 32]         128
+│    │    └─Conv2d: 3-8                  [256, 64, 32, 32]         36,864
+│    │    └─BatchNorm2d: 3-9             [256, 64, 32, 32]         128
+│    │    └─Sequential: 3-10             [256, 64, 32, 32]         --
+├─Sequential: 1-4                        [256, 128, 16, 16]        --
+│    └─BasicBlock: 2-3                   [256, 128, 16, 16]        --
+│    │    └─Conv2d: 3-11                 [256, 128, 16, 16]        73,728
+│    │    └─BatchNorm2d: 3-12            [256, 128, 16, 16]        256
+│    │    └─Conv2d: 3-13                 [256, 128, 16, 16]        147,456
+│    │    └─BatchNorm2d: 3-14            [256, 128, 16, 16]        256
+│    │    └─Sequential: 3-15             [256, 128, 16, 16]        8,448
+│    └─BasicBlock: 2-4                   [256, 128, 16, 16]        --
+│    │    └─Conv2d: 3-16                 [256, 128, 16, 16]        147,456
+│    │    └─BatchNorm2d: 3-17            [256, 128, 16, 16]        256
+│    │    └─Conv2d: 3-18                 [256, 128, 16, 16]        147,456
+│    │    └─BatchNorm2d: 3-19            [256, 128, 16, 16]        256
+│    │    └─Sequential: 3-20             [256, 128, 16, 16]        --
+├─Sequential: 1-5                        [256, 256, 8, 8]          --
+│    └─BasicBlock: 2-5                   [256, 256, 8, 8]          --
+│    │    └─Conv2d: 3-21                 [256, 256, 8, 8]          294,912
+│    │    └─BatchNorm2d: 3-22            [256, 256, 8, 8]          512
+│    │    └─Conv2d: 3-23                 [256, 256, 8, 8]          589,824
+│    │    └─BatchNorm2d: 3-24            [256, 256, 8, 8]          512
+│    │    └─Sequential: 3-25             [256, 256, 8, 8]          33,280
+│    └─BasicBlock: 2-6                   [256, 256, 8, 8]          --
+│    │    └─Conv2d: 3-26                 [256, 256, 8, 8]          589,824
+│    │    └─BatchNorm2d: 3-27            [256, 256, 8, 8]          512
+│    │    └─Conv2d: 3-28                 [256, 256, 8, 8]          589,824
+│    │    └─BatchNorm2d: 3-29            [256, 256, 8, 8]          512
+│    │    └─Sequential: 3-30             [256, 256, 8, 8]          --
+├─Sequential: 1-6                        [256, 512, 4, 4]          --
+│    └─BasicBlock: 2-7                   [256, 512, 4, 4]          --
+│    │    └─Conv2d: 3-31                 [256, 512, 4, 4]          1,179,648
+│    │    └─BatchNorm2d: 3-32            [256, 512, 4, 4]          1,024
+│    │    └─Conv2d: 3-33                 [256, 512, 4, 4]          2,359,296
+│    │    └─BatchNorm2d: 3-34            [256, 512, 4, 4]          1,024
+│    │    └─Sequential: 3-35             [256, 512, 4, 4]          132,096
+│    └─BasicBlock: 2-8                   [256, 512, 4, 4]          --
+│    │    └─Conv2d: 3-36                 [256, 512, 4, 4]          2,359,296
+│    │    └─BatchNorm2d: 3-37            [256, 512, 4, 4]          1,024
+│    │    └─Conv2d: 3-38                 [256, 512, 4, 4]          2,359,296
+│    │    └─BatchNorm2d: 3-39            [256, 512, 4, 4]          1,024
+│    │    └─Sequential: 3-40             [256, 512, 4, 4]          --
+├─Linear: 1-7                            [256, 10]                 5,130
+==========================================================================================
+Total params: 11,173,962
+Trainable params: 11,173,962
+Non-trainable params: 0
+Total mult-adds (Units.GIGABYTES): 142.19
+==========================================================================================
+Input size (MB): 3.15
+Forward/backward pass size (MB): 2516.60
+Params size (MB): 44.70
+Estimated Total Size (MB): 2564.44
+==========================================================================================
+-----Training Started-----
+epoch: 011/200 | loss: 1.2020 | val. loss: 1.2275 | val. total acc: 0.5676 | val. airplane: 0.4221 | val. automobile: 0.7129 | val. bird: 0.4831 | val. cat: 0.5138 | val. deer: 0.5626 | val. dog: 0.4183 | val. frog: 0.6588 | val. horse: 0.4100 | val. ship: 0.7956 | val. truck: 0.6946 | time: 00 hour 4.99 min | finish after: 01 hour 25.77 min
+epoch: 012/200 | loss: 1.1793 | val. loss: 1.2522 | val. total acc: 0.5576 | val. airplane: 0.6844 | val. automobile: 0.6641 | val. bird: 0.4079 | val. cat: 0.3949 | val. deer: 0.4544 | val. dog: 0.6887 | val. frog: 0.5503 | val. horse: 0.5960 | val. ship: 0.5516 | val. truck: 0.5749 | time: 00 hour 5.66 min | finish after: 01 hour 28.72 min
+epoch: 013/200 | loss: 1.1443 | val. loss: 1.1690 | val. total acc: 0.5866 | val. airplane: 0.6680 | val. automobile: 0.7266 | val. bird: 0.4023 | val. cat: 0.3461 | val. deer: 0.5669 | val. dog: 0.5934 | val. frog: 0.6430 | val. horse: 0.6400 | val. ship: 0.6607 | val. truck: 0.6128 | time: 00 hour 6.54 min | finish after: 01 hour 34.13 min
+epoch: 014/200 | loss: 1.1213 | val. loss: 1.1676 | val. total acc: 0.5874 | val. airplane: 0.5922 | val. automobile: 0.7148 | val. bird: 0.4511 | val. cat: 0.5648 | val. deer: 0.6412 | val. dog: 0.3969 | val. frog: 0.6548 | val. horse: 0.5800 | val. ship: 0.7044 | val. truck: 0.5848 | time: 00 hour 7.45 min | finish after: 01 hour 38.99 min
+epoch: 015/200 | loss: 1.0971 | val. loss: 1.1325 | val. total acc: 0.5980 | val. airplane: 0.5943 | val. automobile: 0.6426 | val. bird: 0.4812 | val. cat: 0.3057 | val. deer: 0.5287 | val. dog: 0.7004 | val. frog: 0.6785 | val. horse: 0.6660 | val. ship: 0.6190 | val. truck: 0.7445 | time: 00 hour 8.36 min | finish after: 01 hour 43.11 min
+epoch: 016/200 | loss: 1.0713 | val. loss: 1.1260 | val. total acc: 0.6110 | val. airplane: 0.6025 | val. automobile: 0.6562 | val. bird: 0.4981 | val. cat: 0.5478 | val. deer: 0.5775 | val. dog: 0.5778 | val. frog: 0.6686 | val. horse: 0.5580 | val. ship: 0.7004 | val. truck: 0.7226 | time: 00 hour 9.25 min | finish after: 01 hour 46.39 min
+epoch: 017/200 | loss: 1.0518 | val. loss: 1.0662 | val. total acc: 0.6190 | val. airplane: 0.7070 | val. automobile: 0.7207 | val. bird: 0.5376 | val. cat: 0.4416 | val. deer: 0.5860 | val. dog: 0.5564 | val. frog: 0.6312 | val. horse: 0.6020 | val. ship: 0.6448 | val. truck: 0.7565 | time: 00 hour 10.16 min | finish after: 01 hour 49.35 min
+epoch: 018/200 | loss: 1.0346 | val. loss: 1.2118 | val. total acc: 0.5856 | val. airplane: 0.6516 | val. automobile: 0.8027 | val. bird: 0.4229 | val. cat: 0.3015 | val. deer: 0.5074 | val. dog: 0.3988 | val. frog: 0.7436 | val. horse: 0.6160 | val. ship: 0.7202 | val. truck: 0.6786 | time: 00 hour 11.06 min | finish after: 01 hour 51.78 min
+epoch: 019/200 | loss: 1.0097 | val. loss: 1.0680 | val. total acc: 0.6246 | val. airplane: 0.6865 | val. automobile: 0.7617 | val. bird: 0.5620 | val. cat: 0.5223 | val. deer: 0.5563 | val. dog: 0.5136 | val. frog: 0.7179 | val. horse: 0.5500 | val. ship: 0.7282 | val. truck: 0.6407 | time: 00 hour 11.96 min | finish after: 01 hour 53.94 min
+epoch: 020/200 | loss: 0.9873 | val. loss: 1.0585 | val. total acc: 0.6360 | val. airplane: 0.6373 | val. automobile: 0.7754 | val. bird: 0.5865 | val. cat: 0.4862 | val. deer: 0.4947 | val. dog: 0.6654 | val. frog: 0.7199 | val. horse: 0.5960 | val. ship: 0.7698 | val. truck: 0.6088 | time: 00 hour 12.87 min | finish after: 01 hour 55.86 min
+epoch: 021/200 | loss: 0.9724 | val. loss: 1.0150 | val. total acc: 0.6390 | val. airplane: 0.6393 | val. automobile: 0.7344 | val. bird: 0.5244 | val. cat: 0.4501 | val. deer: 0.5881 | val. dog: 0.5817 | val. frog: 0.6982 | val. horse: 0.6420 | val. ship: 0.7361 | val. truck: 0.7864 | time: 00 hour 13.79 min | finish after: 01 hour 57.53 min
+epoch: 022/200 | loss: 0.9556 | val. loss: 1.0185 | val. total acc: 0.6442 | val. airplane: 0.7418 | val. automobile: 0.7188 | val. bird: 0.5658 | val. cat: 0.5159 | val. deer: 0.5839 | val. dog: 0.4747 | val. frog: 0.7081 | val. horse: 0.6780 | val. ship: 0.6865 | val. truck: 0.7665 | time: 00 hour 14.69 min | finish after: 01 hour 58.86 min
+epoch: 023/200 | loss: 0.9482 | val. loss: 1.0558 | val. total acc: 0.6230 | val. airplane: 0.5656 | val. automobile: 0.7227 | val. bird: 0.5038 | val. cat: 0.5499 | val. deer: 0.5945 | val. dog: 0.4961 | val. frog: 0.6351 | val. horse: 0.6440 | val. ship: 0.7361 | val. truck: 0.7824 | time: 00 hour 15.59 min | finish after: 01 hour 59.98 min
+epoch: 024/200 | loss: 0.9308 | val. loss: 1.0049 | val. total acc: 0.6490 | val. airplane: 0.6578 | val. automobile: 0.7500 | val. bird: 0.5996 | val. cat: 0.5265 | val. deer: 0.5987 | val. dog: 0.5739 | val. frog: 0.6746 | val. horse: 0.6500 | val. ship: 0.6845 | val. truck: 0.7665 | time: 00 hour 16.51 min | finish after: 02 hour 1.04 min
+epoch: 025/200 | loss: 0.9187 | val. loss: 1.0252 | val. total acc: 0.6444 | val. airplane: 0.6803 | val. automobile: 0.7148 | val. bird: 0.6598 | val. cat: 0.3885 | val. deer: 0.5329 | val. dog: 0.5253 | val. frog: 0.7337 | val. horse: 0.6640 | val. ship: 0.7421 | val. truck: 0.7804 | time: 00 hour 17.41 min | finish after: 02 hour 1.85 min
+epoch: 026/200 | loss: 0.9057 | val. loss: 1.0146 | val. total acc: 0.6428 | val. airplane: 0.5984 | val. automobile: 0.8008 | val. bird: 0.5752 | val. cat: 0.4713 | val. deer: 0.5180 | val. dog: 0.5953 | val. frog: 0.6607 | val. horse: 0.7360 | val. ship: 0.7560 | val. truck: 0.6986 | time: 00 hour 18.31 min | finish after: 02 hour 2.56 min
+epoch: 027/200 | loss: 0.8852 | val. loss: 1.0191 | val. total acc: 0.6470 | val. airplane: 0.6045 | val. automobile: 0.7500 | val. bird: 0.5883 | val. cat: 0.4522 | val. deer: 0.6242 | val. dog: 0.6342 | val. frog: 0.6765 | val. horse: 0.6200 | val. ship: 0.7143 | val. truck: 0.7924 | time: 00 hour 19.19 min | finish after: 02 hour 2.94 min
+epoch: 028/200 | loss: 0.8769 | val. loss: 1.0136 | val. total acc: 0.6466 | val. airplane: 0.6475 | val. automobile: 0.7109 | val. bird: 0.5545 | val. cat: 0.5096 | val. deer: 0.6582 | val. dog: 0.5914 | val. frog: 0.7515 | val. horse: 0.5980 | val. ship: 0.7718 | val. truck: 0.6687 | time: 00 hour 20.09 min | finish after: 02 hour 3.44 min
+epoch: 029/200 | loss: 0.8639 | val. loss: 0.9945 | val. total acc: 0.6572 | val. airplane: 0.7008 | val. automobile: 0.7305 | val. bird: 0.5714 | val. cat: 0.5011 | val. deer: 0.5287 | val. dog: 0.5272 | val. frog: 0.7988 | val. horse: 0.6600 | val. ship: 0.7758 | val. truck: 0.7665 | time: 00 hour 21.01 min | finish after: 02 hour 3.90 min
+epoch: 030/200 | loss: 0.8438 | val. loss: 0.9598 | val. total acc: 0.6630 | val. airplane: 0.7008 | val. automobile: 0.7559 | val. bird: 0.5244 | val. cat: 0.5626 | val. deer: 0.5881 | val. dog: 0.5078 | val. frog: 0.7771 | val. horse: 0.6780 | val. ship: 0.7560 | val. truck: 0.7784 | time: 00 hour 21.92 min | finish after: 02 hour 4.22 min
+epoch: 031/200 | loss: 0.8350 | val. loss: 0.9794 | val. total acc: 0.6622 | val. airplane: 0.7193 | val. automobile: 0.7520 | val. bird: 0.5432 | val. cat: 0.5244 | val. deer: 0.6008 | val. dog: 0.6109 | val. frog: 0.7002 | val. horse: 0.7060 | val. ship: 0.7163 | val. truck: 0.7445 | time: 00 hour 22.82 min | finish after: 02 hour 4.41 min
+epoch: 032/200 | loss: 0.8308 | val. loss: 0.9790 | val. total acc: 0.6562 | val. airplane: 0.7398 | val. automobile: 0.7031 | val. bird: 0.5959 | val. cat: 0.6221 | val. deer: 0.5626 | val. dog: 0.5973 | val. frog: 0.6627 | val. horse: 0.6500 | val. ship: 0.7202 | val. truck: 0.7066 | time: 00 hour 23.73 min | finish after: 02 hour 4.56 min
+epoch: 033/200 | loss: 0.8150 | val. loss: 0.9461 | val. total acc: 0.6726 | val. airplane: 0.7234 | val. automobile: 0.7734 | val. bird: 0.5752 | val. cat: 0.4798 | val. deer: 0.6327 | val. dog: 0.6615 | val. frog: 0.7278 | val. horse: 0.6620 | val. ship: 0.7460 | val. truck: 0.7345 | time: 00 hour 24.61 min | finish after: 02 hour 4.52 min
+epoch: 034/200 | loss: 0.8059 | val. loss: 0.9573 | val. total acc: 0.6704 | val. airplane: 0.6680 | val. automobile: 0.7461 | val. bird: 0.5357 | val. cat: 0.6093 | val. deer: 0.5987 | val. dog: 0.5681 | val. frog: 0.8028 | val. horse: 0.6680 | val. ship: 0.7421 | val. truck: 0.7645 | time: 00 hour 25.50 min | finish after: 02 hour 4.51 min
+epoch: 035/200 | loss: 0.7967 | val. loss: 0.9420 | val. total acc: 0.6678 | val. airplane: 0.7090 | val. automobile: 0.7793 | val. bird: 0.5338 | val. cat: 0.5690 | val. deer: 0.5881 | val. dog: 0.5331 | val. frog: 0.7890 | val. horse: 0.6660 | val. ship: 0.8214 | val. truck: 0.6866 | time: 00 hour 26.41 min | finish after: 02 hour 4.51 min
+epoch: 036/200 | loss: 0.7819 | val. loss: 0.9577 | val. total acc: 0.6698 | val. airplane: 0.7049 | val. automobile: 0.7715 | val. bird: 0.5827 | val. cat: 0.6051 | val. deer: 0.5839 | val. dog: 0.5934 | val. frog: 0.7160 | val. horse: 0.6800 | val. ship: 0.7500 | val. truck: 0.7066 | time: 00 hour 27.32 min | finish after: 02 hour 4.45 min
+epoch: 037/200 | loss: 0.7803 | val. loss: 0.9237 | val. total acc: 0.6810 | val. airplane: 0.7029 | val. automobile: 0.7051 | val. bird: 0.6034 | val. cat: 0.5626 | val. deer: 0.6943 | val. dog: 0.5934 | val. frog: 0.7554 | val. horse: 0.6580 | val. ship: 0.7123 | val. truck: 0.8224 | time: 00 hour 28.23 min | finish after: 02 hour 4.37 min
+epoch: 038/200 | loss: 0.7736 | val. loss: 0.9575 | val. total acc: 0.6836 | val. airplane: 0.6189 | val. automobile: 0.7500 | val. bird: 0.6053 | val. cat: 0.5223 | val. deer: 0.7134 | val. dog: 0.6051 | val. frog: 0.8245 | val. horse: 0.6460 | val. ship: 0.8036 | val. truck: 0.7405 | time: 00 hour 29.14 min | finish after: 02 hour 4.24 min
+epoch: 039/200 | loss: 0.7603 | val. loss: 0.9337 | val. total acc: 0.6866 | val. airplane: 0.7213 | val. automobile: 0.7246 | val. bird: 0.5789 | val. cat: 0.5435 | val. deer: 0.6561 | val. dog: 0.6265 | val. frog: 0.7613 | val. horse: 0.6620 | val. ship: 0.8194 | val. truck: 0.7685 | time: 00 hour 30.04 min | finish after: 02 hour 3.99 min
+epoch: 040/200 | loss: 0.7455 | val. loss: 0.9503 | val. total acc: 0.6728 | val. airplane: 0.6393 | val. automobile: 0.8086 | val. bird: 0.6523 | val. cat: 0.6730 | val. deer: 0.5648 | val. dog: 0.5039 | val. frog: 0.7179 | val. horse: 0.7540 | val. ship: 0.7321 | val. truck: 0.6766 | time: 00 hour 30.94 min | finish after: 02 hour 3.76 min
+epoch: 041/200 | loss: 0.7490 | val. loss: 0.9650 | val. total acc: 0.6712 | val. airplane: 0.6762 | val. automobile: 0.7812 | val. bird: 0.5526 | val. cat: 0.5435 | val. deer: 0.6008 | val. dog: 0.7237 | val. frog: 0.7199 | val. horse: 0.6740 | val. ship: 0.7282 | val. truck: 0.7026 | time: 00 hour 31.85 min | finish after: 02 hour 3.51 min
+epoch: 042/200 | loss: 0.7337 | val. loss: 0.9393 | val. total acc: 0.6754 | val. airplane: 0.6844 | val. automobile: 0.7871 | val. bird: 0.5714 | val. cat: 0.4692 | val. deer: 0.7113 | val. dog: 0.5934 | val. frog: 0.7515 | val. horse: 0.6500 | val. ship: 0.7560 | val. truck: 0.7745 | time: 00 hour 32.76 min | finish after: 02 hour 3.23 min
+epoch: 043/200 | loss: 0.7256 | val. loss: 0.9340 | val. total acc: 0.6884 | val. airplane: 0.6947 | val. automobile: 0.7500 | val. bird: 0.5808 | val. cat: 0.5648 | val. deer: 0.7070 | val. dog: 0.5350 | val. frog: 0.7673 | val. horse: 0.7060 | val. ship: 0.7698 | val. truck: 0.8104 | time: 00 hour 33.67 min | finish after: 02 hour 2.93 min
+epoch: 044/200 | loss: 0.7208 | val. loss: 0.9120 | val. total acc: 0.6834 | val. airplane: 0.6988 | val. automobile: 0.7734 | val. bird: 0.5940 | val. cat: 0.5159 | val. deer: 0.6752 | val. dog: 0.6226 | val. frog: 0.7751 | val. horse: 0.7000 | val. ship: 0.7321 | val. truck: 0.7405 | time: 00 hour 34.55 min | finish after: 02 hour 2.48 min
+epoch: 045/200 | loss: 0.7108 | val. loss: 0.9119 | val. total acc: 0.6810 | val. airplane: 0.6742 | val. automobile: 0.7461 | val. bird: 0.5921 | val. cat: 0.5605 | val. deer: 0.6327 | val. dog: 0.5895 | val. frog: 0.7890 | val. horse: 0.7120 | val. ship: 0.7500 | val. truck: 0.7585 | time: 00 hour 35.46 min | finish after: 02 hour 2.13 min
+epoch: 046/200 | loss: 0.6999 | val. loss: 0.9358 | val. total acc: 0.6840 | val. airplane: 0.6311 | val. automobile: 0.7910 | val. bird: 0.6109 | val. cat: 0.5839 | val. deer: 0.6476 | val. dog: 0.6051 | val. frog: 0.7515 | val. horse: 0.6560 | val. ship: 0.8294 | val. truck: 0.7265 | time: 00 hour 36.35 min | finish after: 02 hour 1.70 min
+epoch: 047/200 | loss: 0.6926 | val. loss: 0.9352 | val. total acc: 0.6928 | val. airplane: 0.6926 | val. automobile: 0.8223 | val. bird: 0.6485 | val. cat: 0.5350 | val. deer: 0.6497 | val. dog: 0.6518 | val. frog: 0.7535 | val. horse: 0.6700 | val. ship: 0.7202 | val. truck: 0.7725 | time: 00 hour 37.25 min | finish after: 02 hour 1.27 min
+epoch: 048/200 | loss: 0.6896 | val. loss: 0.9636 | val. total acc: 0.6770 | val. airplane: 0.6967 | val. automobile: 0.7754 | val. bird: 0.5620 | val. cat: 0.5032 | val. deer: 0.6030 | val. dog: 0.5817 | val. frog: 0.7613 | val. horse: 0.7600 | val. ship: 0.8016 | val. truck: 0.7166 | time: 00 hour 38.16 min | finish after: 02 hour 0.85 min
+epoch: 049/200 | loss: 0.6803 | val. loss: 0.9126 | val. total acc: 0.6876 | val. airplane: 0.7111 | val. automobile: 0.8145 | val. bird: 0.6184 | val. cat: 0.5478 | val. deer: 0.6624 | val. dog: 0.5778 | val. frog: 0.7594 | val. horse: 0.6900 | val. ship: 0.7401 | val. truck: 0.7485 | time: 00 hour 39.06 min | finish after: 02 hour 0.36 min
+epoch: 050/200 | loss: 0.6770 | val. loss: 0.9376 | val. total acc: 0.6848 | val. airplane: 0.7439 | val. automobile: 0.7109 | val. bird: 0.5677 | val. cat: 0.5987 | val. deer: 0.6412 | val. dog: 0.6051 | val. frog: 0.7436 | val. horse: 0.7300 | val. ship: 0.7222 | val. truck: 0.7864 | time: 00 hour 39.94 min | finish after: 01 hour 59.83 min
+epoch: 051/200 | loss: 0.6675 | val. loss: 0.9575 | val. total acc: 0.6752 | val. airplane: 0.6557 | val. automobile: 0.8086 | val. bird: 0.6053 | val. cat: 0.6306 | val. deer: 0.5902 | val. dog: 0.5292 | val. frog: 0.7574 | val. horse: 0.6840 | val. ship: 0.7698 | val. truck: 0.7166 | time: 00 hour 40.85 min | finish after: 01 hour 59.35 min
+epoch: 052/200 | loss: 0.6661 | val. loss: 0.9211 | val. total acc: 0.6918 | val. airplane: 0.6906 | val. automobile: 0.8047 | val. bird: 0.6391 | val. cat: 0.5626 | val. deer: 0.6476 | val. dog: 0.5934 | val. frog: 0.6844 | val. horse: 0.7340 | val. ship: 0.7897 | val. truck: 0.7645 | time: 00 hour 41.76 min | finish after: 01 hour 58.86 min
+epoch: 053/200 | loss: 0.6573 | val. loss: 0.9248 | val. total acc: 0.6874 | val. airplane: 0.6291 | val. automobile: 0.7637 | val. bird: 0.6165 | val. cat: 0.4713 | val. deer: 0.6645 | val. dog: 0.7218 | val. frog: 0.7475 | val. horse: 0.6500 | val. ship: 0.8194 | val. truck: 0.7745 | time: 00 hour 42.67 min | finish after: 01 hour 58.34 min
+epoch: 054/200 | loss: 0.6521 | val. loss: 0.9210 | val. total acc: 0.6956 | val. airplane: 0.6701 | val. automobile: 0.7715 | val. bird: 0.6297 | val. cat: 0.5372 | val. deer: 0.6752 | val. dog: 0.6556 | val. frog: 0.7712 | val. horse: 0.6960 | val. ship: 0.7599 | val. truck: 0.7804 | time: 00 hour 43.58 min | finish after: 01 hour 57.84 min
+epoch: 055/200 | loss: 0.6403 | val. loss: 0.9178 | val. total acc: 0.6884 | val. airplane: 0.7111 | val. automobile: 0.7891 | val. bird: 0.5996 | val. cat: 0.5499 | val. deer: 0.5987 | val. dog: 0.6051 | val. frog: 0.7673 | val. horse: 0.7020 | val. ship: 0.7540 | val. truck: 0.7984 | time: 00 hour 44.49 min | finish after: 01 hour 57.30 min
+epoch: 056/200 | loss: 0.6378 | val. loss: 0.9665 | val. total acc: 0.6782 | val. airplane: 0.6639 | val. automobile: 0.7969 | val. bird: 0.6579 | val. cat: 0.4968 | val. deer: 0.7240 | val. dog: 0.6245 | val. frog: 0.7337 | val. horse: 0.6220 | val. ship: 0.6766 | val. truck: 0.7764 | time: 00 hour 45.38 min | finish after: 01 hour 56.69 min
+epoch: 057/200 | loss: 0.6365 | val. loss: 0.9185 | val. total acc: 0.6896 | val. airplane: 0.6619 | val. automobile: 0.7676 | val. bird: 0.6429 | val. cat: 0.5605 | val. deer: 0.6730 | val. dog: 0.6342 | val. frog: 0.7633 | val. horse: 0.6680 | val. ship: 0.7579 | val. truck: 0.7585 | time: 00 hour 46.29 min | finish after: 01 hour 56.13 min
+epoch: 058/200 | loss: 0.6271 | val. loss: 0.9410 | val. total acc: 0.6828 | val. airplane: 0.7357 | val. automobile: 0.7539 | val. bird: 0.6203 | val. cat: 0.5032 | val. deer: 0.6645 | val. dog: 0.6479 | val. frog: 0.8067 | val. horse: 0.6280 | val. ship: 0.6984 | val. truck: 0.7605 | time: 00 hour 47.20 min | finish after: 01 hour 55.56 min
+epoch: 059/200 | loss: 0.6237 | val. loss: 0.9588 | val. total acc: 0.6838 | val. airplane: 0.7193 | val. automobile: 0.8066 | val. bird: 0.6128 | val. cat: 0.4862 | val. deer: 0.5605 | val. dog: 0.6245 | val. frog: 0.7633 | val. horse: 0.7640 | val. ship: 0.7659 | val. truck: 0.7186 | time: 00 hour 48.09 min | finish after: 01 hour 54.93 min
+epoch: 060/200 | loss: 0.6200 | val. loss: 0.9266 | val. total acc: 0.6926 | val. airplane: 0.7316 | val. automobile: 0.7227 | val. bird: 0.6992 | val. cat: 0.5478 | val. deer: 0.6306 | val. dog: 0.5856 | val. frog: 0.7515 | val. horse: 0.7280 | val. ship: 0.7540 | val. truck: 0.7645 | time: 00 hour 48.99 min | finish after: 01 hour 54.32 min
+epoch: 061/200 | loss: 0.6117 | val. loss: 0.9297 | val. total acc: 0.6924 | val. airplane: 0.7295 | val. automobile: 0.7656 | val. bird: 0.6241 | val. cat: 0.5817 | val. deer: 0.6454 | val. dog: 0.5700 | val. frog: 0.7791 | val. horse: 0.7160 | val. ship: 0.7659 | val. truck: 0.7425 | time: 00 hour 49.89 min | finish after: 01 hour 53.68 min
+epoch: 062/200 | loss: 0.6064 | val. loss: 0.9351 | val. total acc: 0.6956 | val. airplane: 0.7418 | val. automobile: 0.7812 | val. bird: 0.6053 | val. cat: 0.5329 | val. deer: 0.6008 | val. dog: 0.6304 | val. frog: 0.7594 | val. horse: 0.7680 | val. ship: 0.7798 | val. truck: 0.7465 | time: 00 hour 50.78 min | finish after: 01 hour 53.02 min
+epoch: 063/200 | loss: 0.6027 | val. loss: 0.9437 | val. total acc: 0.6846 | val. airplane: 0.6578 | val. automobile: 0.8105 | val. bird: 0.6767 | val. cat: 0.5711 | val. deer: 0.6221 | val. dog: 0.5389 | val. frog: 0.7850 | val. horse: 0.7200 | val. ship: 0.7540 | val. truck: 0.6986 | time: 00 hour 51.68 min | finish after: 01 hour 52.39 min
+epoch: 064/200 | loss: 0.5993 | val. loss: 0.8883 | val. total acc: 0.6978 | val. airplane: 0.7131 | val. automobile: 0.7949 | val. bird: 0.6015 | val. cat: 0.6285 | val. deer: 0.6582 | val. dog: 0.6051 | val. frog: 0.7751 | val. horse: 0.6960 | val. ship: 0.7004 | val. truck: 0.8044 | time: 00 hour 52.60 min | finish after: 01 hour 51.77 min
+epoch: 065/200 | loss: 0.5871 | val. loss: 0.9638 | val. total acc: 0.6954 | val. airplane: 0.6352 | val. automobile: 0.7656 | val. bird: 0.6767 | val. cat: 0.5690 | val. deer: 0.6582 | val. dog: 0.6887 | val. frog: 0.6943 | val. horse: 0.6980 | val. ship: 0.7917 | val. truck: 0.7645 | time: 00 hour 53.51 min | finish after: 01 hour 51.14 min
+epoch: 066/200 | loss: 0.5909 | val. loss: 0.9431 | val. total acc: 0.6912 | val. airplane: 0.7234 | val. automobile: 0.7383 | val. bird: 0.5959 | val. cat: 0.5308 | val. deer: 0.6815 | val. dog: 0.5953 | val. frog: 0.7751 | val. horse: 0.7200 | val. ship: 0.7619 | val. truck: 0.7864 | time: 00 hour 54.42 min | finish after: 01 hour 50.49 min
+epoch: 067/200 | loss: 0.5845 | val. loss: 0.9189 | val. total acc: 0.6964 | val. airplane: 0.7459 | val. automobile: 0.8008 | val. bird: 0.6034 | val. cat: 0.6603 | val. deer: 0.6603 | val. dog: 0.5934 | val. frog: 0.7160 | val. horse: 0.7020 | val. ship: 0.7599 | val. truck: 0.7246 | time: 00 hour 55.30 min | finish after: 01 hour 49.77 min
+epoch: 068/200 | loss: 0.5742 | val. loss: 0.9106 | val. total acc: 0.6958 | val. airplane: 0.6783 | val. automobile: 0.8125 | val. bird: 0.6466 | val. cat: 0.5754 | val. deer: 0.6178 | val. dog: 0.6245 | val. frog: 0.8028 | val. horse: 0.7320 | val. ship: 0.7520 | val. truck: 0.7046 | time: 00 hour 56.21 min | finish after: 01 hour 49.11 min
+epoch: 069/200 | loss: 0.5700 | val. loss: 0.9597 | val. total acc: 0.6932 | val. airplane: 0.7480 | val. automobile: 0.7832 | val. bird: 0.6711 | val. cat: 0.5945 | val. deer: 0.6306 | val. dog: 0.5953 | val. frog: 0.7081 | val. horse: 0.7220 | val. ship: 0.7679 | val. truck: 0.7046 | time: 00 hour 57.10 min | finish after: 01 hour 48.41 min
+epoch: 070/200 | loss: 0.5662 | val. loss: 0.9427 | val. total acc: 0.6944 | val. airplane: 0.7111 | val. automobile: 0.7637 | val. bird: 0.6391 | val. cat: 0.5372 | val. deer: 0.6518 | val. dog: 0.6381 | val. frog: 0.7791 | val. horse: 0.7300 | val. ship: 0.7639 | val. truck: 0.7206 | time: 00 hour 58.01 min | finish after: 01 hour 47.74 min
+epoch: 071/200 | loss: 0.5648 | val. loss: 0.9538 | val. total acc: 0.6890 | val. airplane: 0.6680 | val. automobile: 0.7656 | val. bird: 0.6353 | val. cat: 0.5860 | val. deer: 0.6603 | val. dog: 0.6284 | val. frog: 0.7061 | val. horse: 0.7280 | val. ship: 0.7937 | val. truck: 0.7126 | time: 00 hour 58.91 min | finish after: 01 hour 47.03 min
+epoch: 072/200 | loss: 0.5602 | val. loss: 0.9413 | val. total acc: 0.6958 | val. airplane: 0.6865 | val. automobile: 0.7676 | val. bird: 0.6316 | val. cat: 0.5372 | val. deer: 0.6476 | val. dog: 0.7296 | val. frog: 0.7396 | val. horse: 0.7040 | val. ship: 0.7520 | val. truck: 0.7505 | time: 00 hour 59.81 min | finish after: 01 hour 46.34 min
+epoch: 073/200 | loss: 0.5627 | val. loss: 0.9428 | val. total acc: 0.6954 | val. airplane: 0.6988 | val. automobile: 0.7715 | val. bird: 0.6034 | val. cat: 0.4756 | val. deer: 0.7006 | val. dog: 0.6245 | val. frog: 0.8126 | val. horse: 0.7560 | val. ship: 0.7798 | val. truck: 0.7226 | time: 01 hour 0.69 min | finish after: 01 hour 45.59 min
+epoch: 074/200 | loss: 0.5579 | val. loss: 0.9150 | val. total acc: 0.6942 | val. airplane: 0.6660 | val. automobile: 0.7461 | val. bird: 0.6090 | val. cat: 0.5478 | val. deer: 0.6518 | val. dog: 0.5934 | val. frog: 0.7890 | val. horse: 0.7040 | val. ship: 0.8155 | val. truck: 0.8124 | time: 01 hour 1.60 min | finish after: 01 hour 44.89 min
+epoch: 075/200 | loss: 0.5466 | val. loss: 0.9702 | val. total acc: 0.6896 | val. airplane: 0.7049 | val. automobile: 0.7402 | val. bird: 0.6523 | val. cat: 0.5945 | val. deer: 0.6285 | val. dog: 0.6012 | val. frog: 0.7278 | val. horse: 0.7500 | val. ship: 0.7619 | val. truck: 0.7285 | time: 01 hour 2.51 min | finish after: 01 hour 44.19 min
+epoch: 076/200 | loss: 0.5494 | val. loss: 0.9538 | val. total acc: 0.6902 | val. airplane: 0.7459 | val. automobile: 0.8145 | val. bird: 0.5733 | val. cat: 0.4671 | val. deer: 0.6752 | val. dog: 0.6712 | val. frog: 0.7673 | val. horse: 0.6640 | val. ship: 0.7659 | val. truck: 0.7485 | time: 01 hour 3.42 min | finish after: 01 hour 43.48 min
+epoch: 077/200 | loss: 0.5411 | val. loss: 0.9546 | val. total acc: 0.6930 | val. airplane: 0.7152 | val. automobile: 0.7695 | val. bird: 0.6147 | val. cat: 0.5584 | val. deer: 0.6200 | val. dog: 0.6284 | val. frog: 0.7574 | val. horse: 0.7600 | val. ship: 0.7421 | val. truck: 0.7565 | time: 01 hour 4.32 min | finish after: 01 hour 42.75 min
+epoch: 078/200 | loss: 0.5413 | val. loss: 0.9449 | val. total acc: 0.6938 | val. airplane: 0.6824 | val. automobile: 0.8242 | val. bird: 0.6579 | val. cat: 0.5159 | val. deer: 0.5881 | val. dog: 0.6693 | val. frog: 0.7061 | val. horse: 0.7480 | val. ship: 0.7798 | val. truck: 0.7485 | time: 01 hour 5.22 min | finish after: 01 hour 42.00 min
+epoch: 079/200 | loss: 0.5343 | val. loss: 0.9399 | val. total acc: 0.7006 | val. airplane: 0.7336 | val. automobile: 0.7539 | val. bird: 0.6898 | val. cat: 0.4883 | val. deer: 0.6136 | val. dog: 0.6984 | val. frog: 0.7909 | val. horse: 0.6860 | val. ship: 0.7976 | val. truck: 0.7345 | time: 01 hour 6.10 min | finish after: 01 hour 41.24 min
+epoch: 080/200 | loss: 0.5313 | val. loss: 0.9374 | val. total acc: 0.6990 | val. airplane: 0.7275 | val. automobile: 0.7930 | val. bird: 0.5959 | val. cat: 0.5541 | val. deer: 0.6815 | val. dog: 0.6907 | val. frog: 0.7298 | val. horse: 0.7220 | val. ship: 0.7282 | val. truck: 0.7625 | time: 01 hour 7.00 min | finish after: 01 hour 40.51 min
+epoch: 081/200 | loss: 0.5222 | val. loss: 0.9467 | val. total acc: 0.6998 | val. airplane: 0.6844 | val. automobile: 0.8047 | val. bird: 0.6447 | val. cat: 0.5478 | val. deer: 0.7006 | val. dog: 0.6479 | val. frog: 0.7219 | val. horse: 0.7200 | val. ship: 0.7817 | val. truck: 0.7365 | time: 01 hour 7.91 min | finish after: 01 hour 39.77 min
+epoch: 082/200 | loss: 0.5296 | val. loss: 0.9126 | val. total acc: 0.7056 | val. airplane: 0.7480 | val. automobile: 0.7832 | val. bird: 0.6335 | val. cat: 0.5414 | val. deer: 0.6709 | val. dog: 0.6537 | val. frog: 0.7574 | val. horse: 0.7000 | val. ship: 0.8056 | val. truck: 0.7545 | time: 01 hour 8.83 min | finish after: 01 hour 39.05 min
+epoch: 083/200 | loss: 0.5280 | val. loss: 0.9523 | val. total acc: 0.6978 | val. airplane: 0.7336 | val. automobile: 0.7637 | val. bird: 0.6917 | val. cat: 0.5435 | val. deer: 0.6773 | val. dog: 0.5934 | val. frog: 0.7712 | val. horse: 0.7160 | val. ship: 0.7321 | val. truck: 0.7465 | time: 01 hour 9.74 min | finish after: 01 hour 38.31 min
+epoch: 084/200 | loss: 0.5219 | val. loss: 0.9706 | val. total acc: 0.6934 | val. airplane: 0.6762 | val. automobile: 0.7441 | val. bird: 0.6372 | val. cat: 0.5329 | val. deer: 0.6178 | val. dog: 0.6109 | val. frog: 0.8028 | val. horse: 0.7280 | val. ship: 0.8155 | val. truck: 0.7565 | time: 01 hour 10.64 min | finish after: 01 hour 37.55 min
+epoch: 085/200 | loss: 0.5186 | val. loss: 0.9643 | val. total acc: 0.7010 | val. airplane: 0.6947 | val. automobile: 0.7773 | val. bird: 0.6485 | val. cat: 0.5202 | val. deer: 0.6794 | val. dog: 0.6595 | val. frog: 0.7751 | val. horse: 0.7160 | val. ship: 0.7540 | val. truck: 0.7745 | time: 01 hour 11.53 min | finish after: 01 hour 36.77 min
+epoch: 086/200 | loss: 0.5195 | val. loss: 0.9414 | val. total acc: 0.6952 | val. airplane: 0.7623 | val. automobile: 0.7734 | val. bird: 0.6203 | val. cat: 0.5265 | val. deer: 0.7134 | val. dog: 0.5681 | val. frog: 0.7278 | val. horse: 0.7040 | val. ship: 0.7520 | val. truck: 0.8024 | time: 01 hour 12.44 min | finish after: 01 hour 36.02 min
+epoch: 087/200 | loss: 0.5065 | val. loss: 0.9778 | val. total acc: 0.6972 | val. airplane: 0.7008 | val. automobile: 0.7520 | val. bird: 0.6974 | val. cat: 0.5626 | val. deer: 0.6476 | val. dog: 0.6362 | val. frog: 0.7535 | val. horse: 0.6680 | val. ship: 0.7778 | val. truck: 0.7645 | time: 01 hour 13.34 min | finish after: 01 hour 35.26 min
+epoch: 088/200 | loss: 0.5105 | val. loss: 0.9553 | val. total acc: 0.6968 | val. airplane: 0.7377 | val. automobile: 0.7734 | val. bird: 0.6128 | val. cat: 0.5754 | val. deer: 0.6306 | val. dog: 0.6712 | val. frog: 0.7673 | val. horse: 0.6880 | val. ship: 0.7520 | val. truck: 0.7525 | time: 01 hour 14.25 min | finish after: 01 hour 34.50 min
+epoch: 089/200 | loss: 0.4981 | val. loss: 0.9313 | val. total acc: 0.7018 | val. airplane: 0.7316 | val. automobile: 0.7773 | val. bird: 0.6109 | val. cat: 0.5202 | val. deer: 0.6285 | val. dog: 0.6770 | val. frog: 0.7830 | val. horse: 0.7080 | val. ship: 0.7738 | val. truck: 0.7964 | time: 01 hour 15.16 min | finish after: 01 hour 33.73 min
+epoch: 090/200 | loss: 0.5004 | val. loss: 0.9548 | val. total acc: 0.7032 | val. airplane: 0.7111 | val. automobile: 0.8320 | val. bird: 0.6692 | val. cat: 0.5711 | val. deer: 0.6518 | val. dog: 0.6031 | val. frog: 0.7811 | val. horse: 0.6680 | val. ship: 0.7599 | val. truck: 0.7745 | time: 01 hour 16.05 min | finish after: 01 hour 32.95 min
+epoch: 091/200 | loss: 0.5027 | val. loss: 0.9523 | val. total acc: 0.6958 | val. airplane: 0.7131 | val. automobile: 0.7480 | val. bird: 0.6165 | val. cat: 0.5563 | val. deer: 0.6412 | val. dog: 0.6245 | val. frog: 0.8047 | val. horse: 0.7180 | val. ship: 0.8135 | val. truck: 0.7146 | time: 01 hour 16.95 min | finish after: 01 hour 32.17 min
+epoch: 092/200 | loss: 0.4988 | val. loss: 0.9803 | val. total acc: 0.6920 | val. airplane: 0.6516 | val. automobile: 0.7441 | val. bird: 0.6165 | val. cat: 0.4862 | val. deer: 0.6539 | val. dog: 0.6712 | val. frog: 0.7732 | val. horse: 0.7040 | val. ship: 0.7798 | val. truck: 0.8263 | time: 01 hour 17.86 min | finish after: 01 hour 31.40 min
+epoch: 093/200 | loss: 0.4925 | val. loss: 0.9594 | val. total acc: 0.7010 | val. airplane: 0.6557 | val. automobile: 0.8164 | val. bird: 0.6297 | val. cat: 0.5626 | val. deer: 0.6136 | val. dog: 0.6420 | val. frog: 0.8323 | val. horse: 0.7040 | val. ship: 0.7738 | val. truck: 0.7665 | time: 01 hour 18.77 min | finish after: 01 hour 30.62 min
+epoch: 094/200 | loss: 0.4900 | val. loss: 0.9782 | val. total acc: 0.6966 | val. airplane: 0.7480 | val. automobile: 0.8105 | val. bird: 0.5827 | val. cat: 0.5902 | val. deer: 0.6837 | val. dog: 0.6498 | val. frog: 0.7732 | val. horse: 0.7000 | val. ship: 0.6984 | val. truck: 0.7285 | time: 01 hour 19.68 min | finish after: 01 hour 29.85 min
+epoch: 095/200 | loss: 0.4885 | val. loss: 0.9804 | val. total acc: 0.6942 | val. airplane: 0.7152 | val. automobile: 0.7930 | val. bird: 0.6410 | val. cat: 0.5244 | val. deer: 0.6348 | val. dog: 0.6556 | val. frog: 0.7811 | val. horse: 0.7160 | val. ship: 0.7540 | val. truck: 0.7146 | time: 01 hour 20.58 min | finish after: 01 hour 29.07 min
+epoch: 096/200 | loss: 0.4814 | val. loss: 0.9756 | val. total acc: 0.6986 | val. airplane: 0.7398 | val. automobile: 0.7852 | val. bird: 0.6523 | val. cat: 0.5435 | val. deer: 0.6030 | val. dog: 0.6089 | val. frog: 0.7535 | val. horse: 0.7200 | val. ship: 0.7976 | val. truck: 0.7705 | time: 01 hour 21.45 min | finish after: 01 hour 28.24 min
+epoch: 097/200 | loss: 0.4827 | val. loss: 0.9416 | val. total acc: 0.7006 | val. airplane: 0.7193 | val. automobile: 0.7930 | val. bird: 0.5921 | val. cat: 0.5499 | val. deer: 0.6369 | val. dog: 0.7179 | val. frog: 0.7890 | val. horse: 0.7080 | val. ship: 0.7778 | val. truck: 0.7126 | time: 01 hour 22.36 min | finish after: 01 hour 27.45 min
+epoch: 098/200 | loss: 0.4839 | val. loss: 0.9491 | val. total acc: 0.7040 | val. airplane: 0.6926 | val. automobile: 0.7715 | val. bird: 0.6579 | val. cat: 0.6115 | val. deer: 0.6837 | val. dog: 0.6206 | val. frog: 0.7594 | val. horse: 0.7240 | val. ship: 0.7361 | val. truck: 0.7784 | time: 01 hour 23.25 min | finish after: 01 hour 26.65 min
+epoch: 099/200 | loss: 0.4792 | val. loss: 0.9510 | val. total acc: 0.6906 | val. airplane: 0.7213 | val. automobile: 0.7676 | val. bird: 0.6466 | val. cat: 0.4904 | val. deer: 0.6900 | val. dog: 0.6226 | val. frog: 0.7712 | val. horse: 0.6620 | val. ship: 0.7401 | val. truck: 0.7844 | time: 01 hour 24.16 min | finish after: 01 hour 25.86 min
+epoch: 100/200 | loss: 0.4734 | val. loss: 0.9696 | val. total acc: 0.6962 | val. airplane: 0.7008 | val. automobile: 0.7656 | val. bird: 0.5921 | val. cat: 0.4820 | val. deer: 0.6391 | val. dog: 0.6790 | val. frog: 0.8284 | val. horse: 0.7280 | val. ship: 0.7877 | val. truck: 0.7465 | time: 01 hour 25.07 min | finish after: 01 hour 25.07 min
+epoch: 101/200 | loss: 0.4319 | val. loss: 0.9313 | val. total acc: 0.7150 | val. airplane: 0.7377 | val. automobile: 0.7754 | val. bird: 0.6335 | val. cat: 0.5924 | val. deer: 0.6709 | val. dog: 0.6576 | val. frog: 0.7515 | val. horse: 0.7540 | val. ship: 0.7917 | val. truck: 0.7804 | time: 01 hour 25.98 min | finish after: 01 hour 24.27 min
+epoch: 102/200 | loss: 0.4061 | val. loss: 0.8907 | val. total acc: 0.7178 | val. airplane: 0.7213 | val. automobile: 0.8066 | val. bird: 0.6165 | val. cat: 0.5796 | val. deer: 0.6921 | val. dog: 0.6634 | val. frog: 0.7870 | val. horse: 0.7360 | val. ship: 0.7877 | val. truck: 0.7824 | time: 01 hour 26.85 min | finish after: 01 hour 23.45 min
+epoch: 103/200 | loss: 0.3894 | val. loss: 0.8967 | val. total acc: 0.7184 | val. airplane: 0.7131 | val. automobile: 0.7930 | val. bird: 0.6654 | val. cat: 0.5711 | val. deer: 0.6837 | val. dog: 0.6537 | val. frog: 0.7515 | val. horse: 0.7480 | val. ship: 0.8135 | val. truck: 0.7824 | time: 01 hour 27.77 min | finish after: 01 hour 22.66 min
+epoch: 104/200 | loss: 0.3848 | val. loss: 0.8945 | val. total acc: 0.7234 | val. airplane: 0.7459 | val. automobile: 0.8086 | val. bird: 0.6429 | val. cat: 0.5966 | val. deer: 0.6667 | val. dog: 0.6829 | val. frog: 0.7594 | val. horse: 0.7460 | val. ship: 0.7976 | val. truck: 0.7804 | time: 01 hour 28.68 min | finish after: 01 hour 21.86 min
+epoch: 105/200 | loss: 0.3903 | val. loss: 0.9071 | val. total acc: 0.7162 | val. airplane: 0.6619 | val. automobile: 0.7930 | val. bird: 0.6504 | val. cat: 0.6093 | val. deer: 0.6539 | val. dog: 0.6304 | val. frog: 0.7890 | val. horse: 0.7740 | val. ship: 0.8115 | val. truck: 0.7804 | time: 01 hour 29.59 min | finish after: 01 hour 21.06 min
+epoch: 106/200 | loss: 0.3902 | val. loss: 0.9094 | val. total acc: 0.7260 | val. airplane: 0.7049 | val. automobile: 0.8008 | val. bird: 0.6711 | val. cat: 0.6348 | val. deer: 0.6773 | val. dog: 0.6498 | val. frog: 0.7968 | val. horse: 0.7380 | val. ship: 0.7817 | val. truck: 0.7984 | time: 01 hour 30.51 min | finish after: 01 hour 20.26 min
+epoch: 107/200 | loss: 0.3804 | val. loss: 0.9291 | val. total acc: 0.7208 | val. airplane: 0.6967 | val. automobile: 0.7812 | val. bird: 0.6748 | val. cat: 0.5372 | val. deer: 0.6879 | val. dog: 0.6615 | val. frog: 0.7890 | val. horse: 0.7620 | val. ship: 0.8075 | val. truck: 0.7984 | time: 01 hour 31.40 min | finish after: 01 hour 19.44 min
+epoch: 108/200 | loss: 0.3808 | val. loss: 0.8814 | val. total acc: 0.7336 | val. airplane: 0.7172 | val. automobile: 0.8320 | val. bird: 0.6936 | val. cat: 0.5839 | val. deer: 0.6921 | val. dog: 0.6498 | val. frog: 0.8402 | val. horse: 0.7420 | val. ship: 0.7956 | val. truck: 0.7784 | time: 01 hour 32.30 min | finish after: 01 hour 18.62 min
+epoch: 109/200 | loss: 0.3715 | val. loss: 0.9220 | val. total acc: 0.7244 | val. airplane: 0.7500 | val. automobile: 0.7832 | val. bird: 0.6654 | val. cat: 0.5796 | val. deer: 0.7006 | val. dog: 0.6537 | val. frog: 0.7594 | val. horse: 0.7600 | val. ship: 0.7937 | val. truck: 0.7924 | time: 01 hour 33.21 min | finish after: 01 hour 17.82 min
+epoch: 110/200 | loss: 0.3738 | val. loss: 0.9600 | val. total acc: 0.7156 | val. airplane: 0.7275 | val. automobile: 0.7832 | val. bird: 0.6823 | val. cat: 0.6051 | val. deer: 0.6815 | val. dog: 0.6518 | val. frog: 0.7613 | val. horse: 0.7200 | val. ship: 0.7837 | val. truck: 0.7525 | time: 01 hour 34.12 min | finish after: 01 hour 17.00 min
+epoch: 111/200 | loss: 0.3628 | val. loss: 0.9119 | val. total acc: 0.7214 | val. airplane: 0.7295 | val. automobile: 0.8164 | val. bird: 0.6541 | val. cat: 0.5605 | val. deer: 0.6624 | val. dog: 0.6479 | val. frog: 0.7909 | val. horse: 0.7640 | val. ship: 0.7877 | val. truck: 0.7904 | time: 01 hour 35.03 min | finish after: 01 hour 16.19 min
+epoch: 112/200 | loss: 0.3725 | val. loss: 0.9027 | val. total acc: 0.7220 | val. airplane: 0.7029 | val. automobile: 0.7910 | val. bird: 0.6090 | val. cat: 0.6518 | val. deer: 0.7134 | val. dog: 0.6595 | val. frog: 0.7929 | val. horse: 0.7160 | val. ship: 0.7857 | val. truck: 0.7984 | time: 01 hour 35.93 min | finish after: 01 hour 15.38 min
+epoch: 113/200 | loss: 0.3680 | val. loss: 0.9180 | val. total acc: 0.7208 | val. airplane: 0.6967 | val. automobile: 0.8301 | val. bird: 0.6541 | val. cat: 0.5754 | val. deer: 0.6688 | val. dog: 0.6576 | val. frog: 0.7870 | val. horse: 0.7320 | val. ship: 0.8214 | val. truck: 0.7745 | time: 01 hour 36.81 min | finish after: 01 hour 14.53 min
+epoch: 114/200 | loss: 0.3650 | val. loss: 0.9217 | val. total acc: 0.7270 | val. airplane: 0.7172 | val. automobile: 0.8105 | val. bird: 0.6767 | val. cat: 0.6072 | val. deer: 0.6688 | val. dog: 0.6673 | val. frog: 0.7653 | val. horse: 0.7540 | val. ship: 0.8254 | val. truck: 0.7685 | time: 01 hour 37.71 min | finish after: 01 hour 13.71 min
+epoch: 115/200 | loss: 0.3662 | val. loss: 0.9187 | val. total acc: 0.7214 | val. airplane: 0.7254 | val. automobile: 0.8262 | val. bird: 0.6917 | val. cat: 0.5648 | val. deer: 0.7049 | val. dog: 0.6576 | val. frog: 0.7673 | val. horse: 0.7340 | val. ship: 0.7698 | val. truck: 0.7625 | time: 01 hour 38.62 min | finish after: 01 hour 12.89 min
+epoch: 116/200 | loss: 0.3539 | val. loss: 0.9368 | val. total acc: 0.7240 | val. airplane: 0.7152 | val. automobile: 0.7832 | val. bird: 0.6617 | val. cat: 0.6072 | val. deer: 0.6773 | val. dog: 0.6654 | val. frog: 0.7890 | val. horse: 0.7480 | val. ship: 0.8056 | val. truck: 0.7804 | time: 01 hour 39.52 min | finish after: 01 hour 12.07 min
+epoch: 117/200 | loss: 0.3624 | val. loss: 0.8964 | val. total acc: 0.7342 | val. airplane: 0.7357 | val. automobile: 0.7930 | val. bird: 0.6786 | val. cat: 0.5924 | val. deer: 0.7049 | val. dog: 0.6518 | val. frog: 0.7771 | val. horse: 0.7400 | val. ship: 0.8353 | val. truck: 0.8263 | time: 01 hour 40.44 min | finish after: 01 hour 11.25 min
+epoch: 118/200 | loss: 0.3627 | val. loss: 0.9501 | val. total acc: 0.7236 | val. airplane: 0.7520 | val. automobile: 0.8105 | val. bird: 0.7049 | val. cat: 0.5754 | val. deer: 0.6879 | val. dog: 0.6401 | val. frog: 0.7692 | val. horse: 0.7020 | val. ship: 0.8016 | val. truck: 0.7824 | time: 01 hour 41.35 min | finish after: 01 hour 10.43 min
+epoch: 119/200 | loss: 0.3567 | val. loss: 0.9363 | val. total acc: 0.7190 | val. airplane: 0.6742 | val. automobile: 0.8027 | val. bird: 0.6635 | val. cat: 0.5648 | val. deer: 0.7219 | val. dog: 0.6654 | val. frog: 0.7653 | val. horse: 0.7400 | val. ship: 0.7937 | val. truck: 0.7904 | time: 01 hour 42.24 min | finish after: 01 hour 9.59 min
+epoch: 120/200 | loss: 0.3541 | val. loss: 0.8785 | val. total acc: 0.7318 | val. airplane: 0.7459 | val. automobile: 0.8164 | val. bird: 0.6692 | val. cat: 0.5881 | val. deer: 0.6858 | val. dog: 0.6498 | val. frog: 0.8067 | val. horse: 0.7600 | val. ship: 0.7937 | val. truck: 0.7944 | time: 01 hour 43.15 min | finish after: 01 hour 8.76 min
+epoch: 121/200 | loss: 0.3640 | val. loss: 0.9100 | val. total acc: 0.7250 | val. airplane: 0.7664 | val. automobile: 0.7988 | val. bird: 0.6335 | val. cat: 0.5881 | val. deer: 0.6964 | val. dog: 0.6440 | val. frog: 0.7968 | val. horse: 0.7200 | val. ship: 0.7956 | val. truck: 0.8064 | time: 01 hour 44.05 min | finish after: 01 hour 7.94 min
+epoch: 122/200 | loss: 0.3512 | val. loss: 0.9129 | val. total acc: 0.7188 | val. airplane: 0.7131 | val. automobile: 0.8086 | val. bird: 0.6523 | val. cat: 0.5860 | val. deer: 0.6921 | val. dog: 0.6459 | val. frog: 0.7475 | val. horse: 0.7460 | val. ship: 0.7877 | val. truck: 0.8024 | time: 01 hour 44.96 min | finish after: 01 hour 7.11 min
+epoch: 123/200 | loss: 0.3503 | val. loss: 0.9451 | val. total acc: 0.7178 | val. airplane: 0.7254 | val. automobile: 0.7812 | val. bird: 0.6447 | val. cat: 0.5711 | val. deer: 0.6815 | val. dog: 0.6887 | val. frog: 0.7692 | val. horse: 0.7280 | val. ship: 0.8135 | val. truck: 0.7665 | time: 01 hour 45.87 min | finish after: 01 hour 6.28 min
+epoch: 124/200 | loss: 0.3482 | val. loss: 0.9129 | val. total acc: 0.7232 | val. airplane: 0.7254 | val. automobile: 0.8281 | val. bird: 0.6504 | val. cat: 0.6030 | val. deer: 0.6645 | val. dog: 0.6518 | val. frog: 0.7890 | val. horse: 0.7300 | val. ship: 0.7857 | val. truck: 0.7964 | time: 01 hour 46.77 min | finish after: 01 hour 5.44 min
+epoch: 125/200 | loss: 0.3546 | val. loss: 0.8926 | val. total acc: 0.7332 | val. airplane: 0.7029 | val. automobile: 0.8086 | val. bird: 0.6936 | val. cat: 0.5987 | val. deer: 0.7155 | val. dog: 0.6868 | val. frog: 0.7949 | val. horse: 0.7320 | val. ship: 0.8115 | val. truck: 0.7784 | time: 01 hour 47.68 min | finish after: 01 hour 4.61 min
+epoch: 126/200 | loss: 0.3484 | val. loss: 0.9201 | val. total acc: 0.7254 | val. airplane: 0.7111 | val. automobile: 0.7871 | val. bird: 0.6861 | val. cat: 0.6178 | val. deer: 0.6667 | val. dog: 0.6848 | val. frog: 0.7633 | val. horse: 0.7400 | val. ship: 0.8075 | val. truck: 0.7804 | time: 01 hour 48.59 min | finish after: 01 hour 3.77 min
+epoch: 127/200 | loss: 0.3544 | val. loss: 0.9329 | val. total acc: 0.7216 | val. airplane: 0.7377 | val. automobile: 0.8047 | val. bird: 0.6955 | val. cat: 0.5732 | val. deer: 0.6709 | val. dog: 0.6654 | val. frog: 0.7377 | val. horse: 0.7360 | val. ship: 0.7897 | val. truck: 0.7944 | time: 01 hour 49.49 min | finish after: 01 hour 2.94 min
+epoch: 128/200 | loss: 0.3539 | val. loss: 0.9336 | val. total acc: 0.7242 | val. airplane: 0.6926 | val. automobile: 0.8184 | val. bird: 0.7030 | val. cat: 0.5945 | val. deer: 0.6921 | val. dog: 0.6965 | val. frog: 0.7377 | val. horse: 0.7480 | val. ship: 0.8016 | val. truck: 0.7465 | time: 01 hour 50.40 min | finish after: 01 hour 2.10 min
+epoch: 129/200 | loss: 0.3489 | val. loss: 0.9323 | val. total acc: 0.7278 | val. airplane: 0.7316 | val. automobile: 0.8008 | val. bird: 0.6635 | val. cat: 0.5796 | val. deer: 0.7134 | val. dog: 0.6537 | val. frog: 0.8008 | val. horse: 0.7460 | val. ship: 0.7917 | val. truck: 0.7904 | time: 01 hour 51.31 min | finish after: 01 hour 1.26 min
+epoch: 130/200 | loss: 0.3415 | val. loss: 0.9501 | val. total acc: 0.7204 | val. airplane: 0.7008 | val. automobile: 0.7812 | val. bird: 0.6560 | val. cat: 0.6115 | val. deer: 0.6964 | val. dog: 0.6440 | val. frog: 0.7633 | val. horse: 0.7240 | val. ship: 0.8294 | val. truck: 0.7924 | time: 01 hour 52.19 min | finish after: 01 hour 0.41 min
+epoch: 131/200 | loss: 0.3493 | val. loss: 0.9492 | val. total acc: 0.7214 | val. airplane: 0.7357 | val. automobile: 0.8242 | val. bird: 0.6692 | val. cat: 0.5690 | val. deer: 0.6709 | val. dog: 0.6420 | val. frog: 0.7909 | val. horse: 0.7500 | val. ship: 0.8016 | val. truck: 0.7505 | time: 01 hour 53.10 min | finish after: 00 hour 59.57 min
+epoch: 132/200 | loss: 0.3415 | val. loss: 0.9487 | val. total acc: 0.7208 | val. airplane: 0.7500 | val. automobile: 0.8008 | val. bird: 0.6485 | val. cat: 0.5796 | val. deer: 0.6964 | val. dog: 0.6479 | val. frog: 0.7870 | val. horse: 0.7580 | val. ship: 0.7758 | val. truck: 0.7585 | time: 01 hour 54.01 min | finish after: 00 hour 58.73 min
+epoch: 133/200 | loss: 0.3466 | val. loss: 0.9369 | val. total acc: 0.7248 | val. airplane: 0.6762 | val. automobile: 0.7949 | val. bird: 0.6711 | val. cat: 0.6115 | val. deer: 0.6964 | val. dog: 0.6420 | val. frog: 0.7771 | val. horse: 0.7440 | val. ship: 0.8373 | val. truck: 0.7904 | time: 01 hour 54.92 min | finish after: 00 hour 57.89 min
+epoch: 134/200 | loss: 0.3400 | val. loss: 0.9531 | val. total acc: 0.7210 | val. airplane: 0.7131 | val. automobile: 0.8223 | val. bird: 0.6654 | val. cat: 0.6072 | val. deer: 0.6603 | val. dog: 0.6362 | val. frog: 0.7870 | val. horse: 0.7480 | val. ship: 0.7718 | val. truck: 0.7904 | time: 01 hour 55.83 min | finish after: 00 hour 57.05 min
+epoch: 135/200 | loss: 0.3449 | val. loss: 0.9205 | val. total acc: 0.7274 | val. airplane: 0.7398 | val. automobile: 0.7930 | val. bird: 0.6823 | val. cat: 0.5669 | val. deer: 0.7197 | val. dog: 0.6440 | val. frog: 0.7850 | val. horse: 0.7680 | val. ship: 0.8016 | val. truck: 0.7665 | time: 01 hour 56.72 min | finish after: 00 hour 56.20 min
+epoch: 136/200 | loss: 0.3377 | val. loss: 0.9477 | val. total acc: 0.7228 | val. airplane: 0.7295 | val. automobile: 0.7871 | val. bird: 0.6598 | val. cat: 0.6178 | val. deer: 0.6794 | val. dog: 0.6459 | val. frog: 0.7830 | val. horse: 0.7600 | val. ship: 0.7817 | val. truck: 0.7784 | time: 01 hour 57.61 min | finish after: 00 hour 55.35 min
+epoch: 137/200 | loss: 0.3397 | val. loss: 0.8827 | val. total acc: 0.7336 | val. airplane: 0.7398 | val. automobile: 0.8086 | val. bird: 0.6823 | val. cat: 0.6497 | val. deer: 0.6837 | val. dog: 0.6401 | val. frog: 0.7890 | val. horse: 0.7340 | val. ship: 0.7738 | val. truck: 0.8303 | time: 01 hour 58.52 min | finish after: 00 hour 54.50 min
+epoch: 138/200 | loss: 0.3402 | val. loss: 0.9129 | val. total acc: 0.7264 | val. airplane: 0.7234 | val. automobile: 0.7891 | val. bird: 0.6711 | val. cat: 0.5987 | val. deer: 0.6837 | val. dog: 0.6673 | val. frog: 0.7968 | val. horse: 0.7360 | val. ship: 0.8016 | val. truck: 0.7884 | time: 01 hour 59.43 min | finish after: 00 hour 53.66 min
+epoch: 139/200 | loss: 0.3384 | val. loss: 0.9566 | val. total acc: 0.7232 | val. airplane: 0.7357 | val. automobile: 0.7910 | val. bird: 0.6955 | val. cat: 0.5541 | val. deer: 0.6964 | val. dog: 0.6887 | val. frog: 0.7751 | val. horse: 0.7480 | val. ship: 0.7698 | val. truck: 0.7665 | time: 02 hour 0.34 min | finish after: 00 hour 52.81 min
+epoch: 140/200 | loss: 0.3377 | val. loss: 0.9392 | val. total acc: 0.7200 | val. airplane: 0.6742 | val. automobile: 0.8008 | val. bird: 0.6805 | val. cat: 0.5775 | val. deer: 0.6582 | val. dog: 0.6926 | val. frog: 0.7771 | val. horse: 0.7420 | val. ship: 0.8036 | val. truck: 0.7804 | time: 02 hour 1.25 min | finish after: 00 hour 51.96 min
+epoch: 141/200 | loss: 0.3385 | val. loss: 0.9513 | val. total acc: 0.7176 | val. airplane: 0.7152 | val. automobile: 0.7891 | val. bird: 0.6729 | val. cat: 0.6348 | val. deer: 0.6497 | val. dog: 0.6440 | val. frog: 0.7554 | val. horse: 0.7320 | val. ship: 0.8075 | val. truck: 0.7685 | time: 02 hour 2.13 min | finish after: 00 hour 51.11 min
+epoch: 142/200 | loss: 0.3402 | val. loss: 0.9408 | val. total acc: 0.7212 | val. airplane: 0.7295 | val. automobile: 0.8320 | val. bird: 0.6786 | val. cat: 0.5839 | val. deer: 0.6561 | val. dog: 0.6576 | val. frog: 0.7732 | val. horse: 0.7280 | val. ship: 0.7659 | val. truck: 0.7964 | time: 02 hour 3.04 min | finish after: 00 hour 50.26 min
+epoch: 143/200 | loss: 0.3361 | val. loss: 0.9335 | val. total acc: 0.7224 | val. airplane: 0.7234 | val. automobile: 0.7910 | val. bird: 0.6861 | val. cat: 0.5902 | val. deer: 0.6900 | val. dog: 0.6518 | val. frog: 0.7751 | val. horse: 0.7380 | val. ship: 0.7917 | val. truck: 0.7784 | time: 02 hour 3.95 min | finish after: 00 hour 49.41 min
+epoch: 144/200 | loss: 0.3427 | val. loss: 0.9288 | val. total acc: 0.7248 | val. airplane: 0.7254 | val. automobile: 0.7871 | val. bird: 0.6917 | val. cat: 0.6093 | val. deer: 0.6752 | val. dog: 0.6790 | val. frog: 0.7653 | val. horse: 0.7420 | val. ship: 0.8095 | val. truck: 0.7545 | time: 02 hour 4.85 min | finish after: 00 hour 48.55 min
+epoch: 145/200 | loss: 0.3275 | val. loss: 0.9544 | val. total acc: 0.7292 | val. airplane: 0.7234 | val. automobile: 0.8145 | val. bird: 0.6560 | val. cat: 0.6369 | val. deer: 0.6943 | val. dog: 0.6751 | val. frog: 0.7495 | val. horse: 0.7480 | val. ship: 0.7877 | val. truck: 0.8024 | time: 02 hour 5.76 min | finish after: 00 hour 47.70 min
+epoch: 146/200 | loss: 0.3312 | val. loss: 0.9428 | val. total acc: 0.7246 | val. airplane: 0.7275 | val. automobile: 0.8281 | val. bird: 0.6635 | val. cat: 0.6093 | val. deer: 0.6773 | val. dog: 0.6518 | val. frog: 0.7732 | val. horse: 0.7660 | val. ship: 0.7679 | val. truck: 0.7745 | time: 02 hour 6.66 min | finish after: 00 hour 46.85 min
+epoch: 147/200 | loss: 0.3411 | val. loss: 0.9395 | val. total acc: 0.7202 | val. airplane: 0.6865 | val. automobile: 0.8105 | val. bird: 0.6805 | val. cat: 0.6115 | val. deer: 0.6815 | val. dog: 0.6401 | val. frog: 0.7594 | val. horse: 0.7360 | val. ship: 0.8214 | val. truck: 0.7665 | time: 02 hour 7.53 min | finish after: 00 hour 45.98 min
+epoch: 148/200 | loss: 0.3354 | val. loss: 0.9545 | val. total acc: 0.7246 | val. airplane: 0.6742 | val. automobile: 0.8203 | val. bird: 0.6541 | val. cat: 0.6030 | val. deer: 0.7006 | val. dog: 0.6342 | val. frog: 0.7949 | val. horse: 0.7500 | val. ship: 0.8353 | val. truck: 0.7725 | time: 02 hour 8.44 min | finish after: 00 hour 45.13 min
+epoch: 149/200 | loss: 0.3330 | val. loss: 0.9617 | val. total acc: 0.7164 | val. airplane: 0.7377 | val. automobile: 0.8105 | val. bird: 0.6898 | val. cat: 0.5329 | val. deer: 0.6688 | val. dog: 0.6732 | val. frog: 0.7554 | val. horse: 0.7200 | val. ship: 0.7857 | val. truck: 0.7764 | time: 02 hour 9.35 min | finish after: 00 hour 44.27 min
+epoch: 150/200 | loss: 0.3305 | val. loss: 0.9605 | val. total acc: 0.7248 | val. airplane: 0.7295 | val. automobile: 0.7891 | val. bird: 0.6654 | val. cat: 0.5690 | val. deer: 0.6667 | val. dog: 0.6693 | val. frog: 0.7771 | val. horse: 0.7360 | val. ship: 0.8115 | val. truck: 0.8244 | time: 02 hour 10.26 min | finish after: 00 hour 43.42 min
+epoch: 151/200 | loss: 0.3309 | val. loss: 0.9116 | val. total acc: 0.7318 | val. airplane: 0.7316 | val. automobile: 0.7910 | val. bird: 0.6635 | val. cat: 0.6008 | val. deer: 0.6730 | val. dog: 0.6946 | val. frog: 0.7968 | val. horse: 0.7240 | val. ship: 0.8254 | val. truck: 0.8084 | time: 02 hour 11.17 min | finish after: 00 hour 42.57 min
+epoch: 152/200 | loss: 0.3312 | val. loss: 0.9134 | val. total acc: 0.7292 | val. airplane: 0.6947 | val. automobile: 0.8105 | val. bird: 0.6880 | val. cat: 0.5881 | val. deer: 0.7049 | val. dog: 0.6848 | val. frog: 0.7949 | val. horse: 0.7440 | val. ship: 0.7956 | val. truck: 0.7764 | time: 02 hour 12.08 min | finish after: 00 hour 41.71 min
+epoch: 153/200 | loss: 0.3345 | val. loss: 0.9478 | val. total acc: 0.7256 | val. airplane: 0.7234 | val. automobile: 0.7988 | val. bird: 0.6259 | val. cat: 0.5839 | val. deer: 0.6837 | val. dog: 0.6829 | val. frog: 0.8087 | val. horse: 0.7580 | val. ship: 0.7817 | val. truck: 0.8024 | time: 02 hour 12.96 min | finish after: 00 hour 40.84 min
+epoch: 154/200 | loss: 0.3253 | val. loss: 0.9033 | val. total acc: 0.7386 | val. airplane: 0.7480 | val. automobile: 0.8125 | val. bird: 0.6598 | val. cat: 0.6391 | val. deer: 0.7155 | val. dog: 0.6576 | val. frog: 0.7968 | val. horse: 0.7380 | val. ship: 0.8115 | val. truck: 0.8044 | time: 02 hour 13.88 min | finish after: 00 hour 39.99 min
+epoch: 155/200 | loss: 0.3263 | val. loss: 0.9360 | val. total acc: 0.7178 | val. airplane: 0.7172 | val. automobile: 0.7969 | val. bird: 0.6711 | val. cat: 0.5966 | val. deer: 0.6667 | val. dog: 0.6537 | val. frog: 0.7751 | val. horse: 0.7380 | val. ship: 0.7837 | val. truck: 0.7705 | time: 02 hour 14.79 min | finish after: 00 hour 39.13 min
+epoch: 156/200 | loss: 0.3245 | val. loss: 0.9596 | val. total acc: 0.7182 | val. airplane: 0.7193 | val. automobile: 0.7969 | val. bird: 0.6504 | val. cat: 0.6263 | val. deer: 0.6921 | val. dog: 0.6362 | val. frog: 0.7574 | val. horse: 0.7180 | val. ship: 0.8056 | val. truck: 0.7764 | time: 02 hour 15.69 min | finish after: 00 hour 38.27 min
+epoch: 157/200 | loss: 0.3310 | val. loss: 0.9416 | val. total acc: 0.7228 | val. airplane: 0.7418 | val. automobile: 0.7695 | val. bird: 0.6673 | val. cat: 0.6157 | val. deer: 0.7113 | val. dog: 0.6381 | val. frog: 0.7535 | val. horse: 0.7500 | val. ship: 0.7698 | val. truck: 0.8084 | time: 02 hour 16.60 min | finish after: 00 hour 37.41 min
+epoch: 158/200 | loss: 0.3307 | val. loss: 0.9234 | val. total acc: 0.7276 | val. airplane: 0.7357 | val. automobile: 0.8086 | val. bird: 0.6523 | val. cat: 0.5902 | val. deer: 0.7176 | val. dog: 0.6518 | val. frog: 0.7692 | val. horse: 0.7540 | val. ship: 0.8056 | val. truck: 0.7864 | time: 02 hour 17.49 min | finish after: 00 hour 36.55 min
+epoch: 159/200 | loss: 0.3261 | val. loss: 0.9138 | val. total acc: 0.7256 | val. airplane: 0.7459 | val. automobile: 0.7754 | val. bird: 0.6504 | val. cat: 0.6178 | val. deer: 0.6858 | val. dog: 0.6459 | val. frog: 0.7673 | val. horse: 0.7300 | val. ship: 0.8115 | val. truck: 0.8224 | time: 02 hour 18.40 min | finish after: 00 hour 35.69 min
+epoch: 160/200 | loss: 0.3251 | val. loss: 0.9616 | val. total acc: 0.7264 | val. airplane: 0.7029 | val. automobile: 0.7852 | val. bird: 0.6598 | val. cat: 0.6157 | val. deer: 0.6730 | val. dog: 0.6848 | val. frog: 0.7988 | val. horse: 0.7520 | val. ship: 0.7996 | val. truck: 0.7844 | time: 02 hour 19.31 min | finish after: 00 hour 34.83 min
+epoch: 161/200 | loss: 0.3220 | val. loss: 0.9155 | val. total acc: 0.7266 | val. airplane: 0.7131 | val. automobile: 0.8340 | val. bird: 0.6748 | val. cat: 0.5945 | val. deer: 0.6624 | val. dog: 0.6323 | val. frog: 0.8067 | val. horse: 0.7260 | val. ship: 0.8115 | val. truck: 0.8004 | time: 02 hour 20.22 min | finish after: 00 hour 33.97 min
+epoch: 162/200 | loss: 0.3260 | val. loss: 0.9235 | val. total acc: 0.7314 | val. airplane: 0.7336 | val. automobile: 0.7988 | val. bird: 0.6598 | val. cat: 0.6093 | val. deer: 0.7091 | val. dog: 0.6595 | val. frog: 0.8047 | val. horse: 0.7460 | val. ship: 0.8095 | val. truck: 0.7784 | time: 02 hour 21.13 min | finish after: 00 hour 33.10 min
+epoch: 163/200 | loss: 0.3224 | val. loss: 0.9251 | val. total acc: 0.7216 | val. airplane: 0.6947 | val. automobile: 0.8203 | val. bird: 0.6429 | val. cat: 0.5945 | val. deer: 0.6603 | val. dog: 0.6732 | val. frog: 0.7791 | val. horse: 0.7300 | val. ship: 0.8075 | val. truck: 0.8044 | time: 02 hour 22.03 min | finish after: 00 hour 32.24 min
+epoch: 164/200 | loss: 0.3253 | val. loss: 0.9193 | val. total acc: 0.7228 | val. airplane: 0.7316 | val. automobile: 0.7852 | val. bird: 0.6729 | val. cat: 0.6306 | val. deer: 0.6815 | val. dog: 0.6965 | val. frog: 0.7495 | val. horse: 0.7120 | val. ship: 0.7976 | val. truck: 0.7645 | time: 02 hour 22.92 min | finish after: 00 hour 31.37 min
+epoch: 165/200 | loss: 0.3261 | val. loss: 0.9877 | val. total acc: 0.7236 | val. airplane: 0.7234 | val. automobile: 0.7930 | val. bird: 0.6635 | val. cat: 0.5690 | val. deer: 0.6921 | val. dog: 0.6926 | val. frog: 0.8126 | val. horse: 0.7020 | val. ship: 0.8095 | val. truck: 0.7685 | time: 02 hour 23.82 min | finish after: 00 hour 30.51 min
+epoch: 166/200 | loss: 0.3190 | val. loss: 0.9622 | val. total acc: 0.7182 | val. airplane: 0.7008 | val. automobile: 0.8047 | val. bird: 0.6748 | val. cat: 0.5754 | val. deer: 0.6518 | val. dog: 0.6304 | val. frog: 0.7870 | val. horse: 0.7580 | val. ship: 0.7897 | val. truck: 0.7984 | time: 02 hour 24.73 min | finish after: 00 hour 29.64 min
+epoch: 167/200 | loss: 0.3209 | val. loss: 0.9109 | val. total acc: 0.7294 | val. airplane: 0.7316 | val. automobile: 0.8086 | val. bird: 0.7086 | val. cat: 0.5924 | val. deer: 0.6837 | val. dog: 0.6712 | val. frog: 0.7396 | val. horse: 0.7720 | val. ship: 0.7937 | val. truck: 0.7824 | time: 02 hour 25.64 min | finish after: 00 hour 28.78 min
+epoch: 168/200 | loss: 0.3218 | val. loss: 0.9489 | val. total acc: 0.7184 | val. airplane: 0.7172 | val. automobile: 0.8105 | val. bird: 0.6560 | val. cat: 0.5817 | val. deer: 0.6709 | val. dog: 0.6187 | val. frog: 0.7594 | val. horse: 0.7640 | val. ship: 0.8175 | val. truck: 0.7804 | time: 02 hour 26.55 min | finish after: 00 hour 27.91 min
+epoch: 169/200 | loss: 0.3229 | val. loss: 0.9332 | val. total acc: 0.7276 | val. airplane: 0.7070 | val. automobile: 0.8086 | val. bird: 0.6842 | val. cat: 0.6072 | val. deer: 0.6794 | val. dog: 0.6479 | val. frog: 0.7692 | val. horse: 0.7600 | val. ship: 0.8115 | val. truck: 0.7924 | time: 02 hour 27.45 min | finish after: 00 hour 27.05 min
+epoch: 170/200 | loss: 0.3223 | val. loss: 0.9507 | val. total acc: 0.7334 | val. airplane: 0.7254 | val. automobile: 0.7812 | val. bird: 0.6748 | val. cat: 0.6008 | val. deer: 0.6815 | val. dog: 0.7062 | val. frog: 0.7949 | val. horse: 0.7660 | val. ship: 0.8155 | val. truck: 0.7784 | time: 02 hour 28.33 min | finish after: 00 hour 26.18 min
+epoch: 171/200 | loss: 0.3251 | val. loss: 0.9477 | val. total acc: 0.7276 | val. airplane: 0.7643 | val. automobile: 0.8027 | val. bird: 0.6485 | val. cat: 0.5605 | val. deer: 0.6921 | val. dog: 0.6362 | val. frog: 0.7909 | val. horse: 0.7640 | val. ship: 0.7956 | val. truck: 0.8144 | time: 02 hour 29.24 min | finish after: 00 hour 25.31 min
+epoch: 172/200 | loss: 0.3225 | val. loss: 0.9376 | val. total acc: 0.7222 | val. airplane: 0.7049 | val. automobile: 0.7812 | val. bird: 0.6353 | val. cat: 0.5924 | val. deer: 0.6879 | val. dog: 0.6770 | val. frog: 0.8008 | val. horse: 0.7440 | val. ship: 0.7996 | val. truck: 0.7924 | time: 02 hour 30.15 min | finish after: 00 hour 24.44 min
+epoch: 173/200 | loss: 0.3204 | val. loss: 0.9066 | val. total acc: 0.7342 | val. airplane: 0.7336 | val. automobile: 0.8223 | val. bird: 0.7124 | val. cat: 0.6221 | val. deer: 0.6582 | val. dog: 0.6342 | val. frog: 0.7850 | val. horse: 0.7520 | val. ship: 0.8115 | val. truck: 0.8004 | time: 02 hour 31.06 min | finish after: 00 hour 23.58 min
+epoch: 174/200 | loss: 0.3247 | val. loss: 0.9085 | val. total acc: 0.7264 | val. airplane: 0.7398 | val. automobile: 0.7910 | val. bird: 0.6842 | val. cat: 0.6093 | val. deer: 0.6921 | val. dog: 0.6770 | val. frog: 0.7613 | val. horse: 0.7360 | val. ship: 0.7976 | val. truck: 0.7685 | time: 02 hour 31.97 min | finish after: 00 hour 22.71 min
+epoch: 175/200 | loss: 0.3194 | val. loss: 0.9220 | val. total acc: 0.7242 | val. airplane: 0.7213 | val. automobile: 0.8164 | val. bird: 0.6805 | val. cat: 0.5499 | val. deer: 0.6667 | val. dog: 0.6926 | val. frog: 0.7751 | val. horse: 0.7280 | val. ship: 0.8095 | val. truck: 0.7884 | time: 02 hour 32.85 min | finish after: 00 hour 21.84 min
+epoch: 176/200 | loss: 0.3157 | val. loss: 0.9560 | val. total acc: 0.7254 | val. airplane: 0.7459 | val. automobile: 0.8105 | val. bird: 0.6767 | val. cat: 0.5924 | val. deer: 0.6752 | val. dog: 0.6615 | val. frog: 0.7968 | val. horse: 0.7340 | val. ship: 0.7897 | val. truck: 0.7625 | time: 02 hour 33.76 min | finish after: 00 hour 20.97 min
+epoch: 177/200 | loss: 0.3258 | val. loss: 0.9581 | val. total acc: 0.7220 | val. airplane: 0.7090 | val. automobile: 0.8320 | val. bird: 0.6579 | val. cat: 0.6136 | val. deer: 0.6709 | val. dog: 0.6673 | val. frog: 0.7574 | val. horse: 0.7460 | val. ship: 0.7758 | val. truck: 0.7824 | time: 02 hour 34.67 min | finish after: 00 hour 20.10 min
+epoch: 178/200 | loss: 0.3243 | val. loss: 0.9525 | val. total acc: 0.7152 | val. airplane: 0.7459 | val. automobile: 0.8008 | val. bird: 0.6579 | val. cat: 0.5860 | val. deer: 0.6561 | val. dog: 0.6459 | val. frog: 0.7811 | val. horse: 0.7220 | val. ship: 0.7897 | val. truck: 0.7585 | time: 02 hour 35.58 min | finish after: 00 hour 19.23 min
+epoch: 179/200 | loss: 0.3219 | val. loss: 0.9149 | val. total acc: 0.7302 | val. airplane: 0.7193 | val. automobile: 0.8184 | val. bird: 0.6992 | val. cat: 0.5987 | val. deer: 0.6518 | val. dog: 0.6654 | val. frog: 0.7870 | val. horse: 0.7500 | val. ship: 0.7917 | val. truck: 0.8084 | time: 02 hour 36.48 min | finish after: 00 hour 18.36 min
+epoch: 180/200 | loss: 0.3200 | val. loss: 0.9148 | val. total acc: 0.7268 | val. airplane: 0.7582 | val. automobile: 0.8008 | val. bird: 0.6523 | val. cat: 0.5945 | val. deer: 0.6794 | val. dog: 0.6673 | val. frog: 0.7692 | val. horse: 0.7400 | val. ship: 0.7937 | val. truck: 0.8064 | time: 02 hour 37.39 min | finish after: 00 hour 17.49 min
+epoch: 181/200 | loss: 0.3187 | val. loss: 0.9430 | val. total acc: 0.7176 | val. airplane: 0.7090 | val. automobile: 0.7578 | val. bird: 0.6523 | val. cat: 0.5796 | val. deer: 0.7070 | val. dog: 0.6498 | val. frog: 0.7771 | val. horse: 0.7600 | val. ship: 0.7917 | val. truck: 0.7864 | time: 02 hour 38.28 min | finish after: 00 hour 16.61 min
+epoch: 182/200 | loss: 0.3211 | val. loss: 0.9384 | val. total acc: 0.7250 | val. airplane: 0.7152 | val. automobile: 0.8047 | val. bird: 0.6729 | val. cat: 0.5372 | val. deer: 0.6837 | val. dog: 0.6946 | val. frog: 0.7909 | val. horse: 0.7380 | val. ship: 0.7917 | val. truck: 0.8084 | time: 02 hour 39.10 min | finish after: 00 hour 15.74 min
+epoch: 183/200 | loss: 0.3178 | val. loss: 0.9439 | val. total acc: 0.7188 | val. airplane: 0.7398 | val. automobile: 0.8027 | val. bird: 0.6410 | val. cat: 0.5860 | val. deer: 0.6561 | val. dog: 0.6537 | val. frog: 0.7791 | val. horse: 0.7140 | val. ship: 0.8274 | val. truck: 0.7804 | time: 02 hour 39.55 min | finish after: 00 hour 14.82 min
+epoch: 184/200 | loss: 0.3247 | val. loss: 0.9388 | val. total acc: 0.7236 | val. airplane: 0.7029 | val. automobile: 0.8008 | val. bird: 0.6767 | val. cat: 0.5966 | val. deer: 0.7006 | val. dog: 0.6440 | val. frog: 0.7771 | val. horse: 0.7360 | val. ship: 0.8075 | val. truck: 0.7864 | time: 02 hour 39.99 min | finish after: 00 hour 13.91 min
+epoch: 185/200 | loss: 0.3176 | val. loss: 0.9369 | val. total acc: 0.7244 | val. airplane: 0.7480 | val. automobile: 0.7832 | val. bird: 0.6673 | val. cat: 0.5732 | val. deer: 0.6709 | val. dog: 0.6732 | val. frog: 0.7535 | val. horse: 0.7720 | val. ship: 0.8095 | val. truck: 0.7844 | time: 02 hour 40.44 min | finish after: 00 hour 13.01 min
+epoch: 186/200 | loss: 0.3239 | val. loss: 0.9589 | val. total acc: 0.7252 | val. airplane: 0.7316 | val. automobile: 0.8027 | val. bird: 0.6391 | val. cat: 0.5520 | val. deer: 0.6858 | val. dog: 0.7023 | val. frog: 0.7712 | val. horse: 0.7460 | val. ship: 0.8254 | val. truck: 0.7864 | time: 02 hour 40.88 min | finish after: 00 hour 12.11 min
+epoch: 187/200 | loss: 0.3269 | val. loss: 0.9551 | val. total acc: 0.7252 | val. airplane: 0.7500 | val. automobile: 0.8145 | val. bird: 0.6429 | val. cat: 0.5648 | val. deer: 0.6794 | val. dog: 0.6693 | val. frog: 0.8166 | val. horse: 0.7040 | val. ship: 0.8095 | val. truck: 0.7924 | time: 02 hour 41.32 min | finish after: 00 hour 11.21 min
+epoch: 188/200 | loss: 0.3206 | val. loss: 0.9327 | val. total acc: 0.7242 | val. airplane: 0.7008 | val. automobile: 0.7988 | val. bird: 0.6917 | val. cat: 0.6051 | val. deer: 0.6730 | val. dog: 0.6654 | val. frog: 0.7949 | val. horse: 0.7420 | val. ship: 0.7937 | val. truck: 0.7665 | time: 02 hour 41.77 min | finish after: 00 hour 10.33 min
+epoch: 189/200 | loss: 0.3184 | val. loss: 0.9566 | val. total acc: 0.7204 | val. airplane: 0.7295 | val. automobile: 0.8008 | val. bird: 0.6861 | val. cat: 0.6008 | val. deer: 0.6900 | val. dog: 0.6226 | val. frog: 0.7712 | val. horse: 0.7440 | val. ship: 0.7758 | val. truck: 0.7764 | time: 02 hour 42.21 min | finish after: 00 hour 9.44 min
+epoch: 190/200 | loss: 0.3246 | val. loss: 0.9132 | val. total acc: 0.7270 | val. airplane: 0.7480 | val. automobile: 0.7891 | val. bird: 0.6748 | val. cat: 0.5924 | val. deer: 0.6943 | val. dog: 0.6420 | val. frog: 0.7811 | val. horse: 0.7540 | val. ship: 0.8115 | val. truck: 0.7764 | time: 02 hour 42.65 min | finish after: 00 hour 8.56 min
+epoch: 191/200 | loss: 0.3228 | val. loss: 0.9466 | val. total acc: 0.7270 | val. airplane: 0.7316 | val. automobile: 0.8184 | val. bird: 0.6729 | val. cat: 0.5839 | val. deer: 0.6985 | val. dog: 0.6459 | val. frog: 0.8067 | val. horse: 0.7300 | val. ship: 0.7917 | val. truck: 0.7824 | time: 02 hour 43.10 min | finish after: 00 hour 7.69 min
+epoch: 192/200 | loss: 0.3202 | val. loss: 0.9493 | val. total acc: 0.7270 | val. airplane: 0.7070 | val. automobile: 0.7812 | val. bird: 0.6673 | val. cat: 0.5860 | val. deer: 0.6921 | val. dog: 0.6770 | val. frog: 0.7791 | val. horse: 0.7520 | val. ship: 0.8214 | val. truck: 0.7984 | time: 02 hour 43.54 min | finish after: 00 hour 6.81 min
+epoch: 193/200 | loss: 0.3190 | val. loss: 0.9450 | val. total acc: 0.7276 | val. airplane: 0.7500 | val. automobile: 0.7891 | val. bird: 0.6842 | val. cat: 0.5987 | val. deer: 0.6645 | val. dog: 0.6498 | val. frog: 0.7732 | val. horse: 0.7660 | val. ship: 0.7857 | val. truck: 0.8064 | time: 02 hour 43.98 min | finish after: 00 hour 5.95 min
+epoch: 194/200 | loss: 0.3185 | val. loss: 0.9620 | val. total acc: 0.7284 | val. airplane: 0.7234 | val. automobile: 0.8262 | val. bird: 0.7011 | val. cat: 0.5817 | val. deer: 0.7006 | val. dog: 0.6440 | val. frog: 0.7396 | val. horse: 0.7500 | val. ship: 0.8155 | val. truck: 0.7924 | time: 02 hour 44.43 min | finish after: 00 hour 5.09 min
+epoch: 195/200 | loss: 0.3119 | val. loss: 0.9477 | val. total acc: 0.7252 | val. airplane: 0.7172 | val. automobile: 0.7891 | val. bird: 0.6635 | val. cat: 0.5669 | val. deer: 0.6943 | val. dog: 0.6634 | val. frog: 0.7909 | val. horse: 0.7140 | val. ship: 0.8393 | val. truck: 0.8044 | time: 02 hour 44.87 min | finish after: 00 hour 4.23 min
+epoch: 196/200 | loss: 0.3246 | val. loss: 0.9277 | val. total acc: 0.7268 | val. airplane: 0.7398 | val. automobile: 0.7891 | val. bird: 0.6635 | val. cat: 0.5796 | val. deer: 0.6730 | val. dog: 0.6459 | val. frog: 0.8166 | val. horse: 0.7920 | val. ship: 0.7639 | val. truck: 0.7964 | time: 02 hour 45.31 min | finish after: 00 hour 3.37 min
+epoch: 197/200 | loss: 0.3191 | val. loss: 0.9645 | val. total acc: 0.7320 | val. airplane: 0.7254 | val. automobile: 0.8125 | val. bird: 0.6654 | val. cat: 0.5945 | val. deer: 0.6858 | val. dog: 0.6965 | val. frog: 0.7633 | val. horse: 0.7640 | val. ship: 0.8254 | val. truck: 0.7784 | time: 02 hour 45.76 min | finish after: 00 hour 2.52 min
+epoch: 198/200 | loss: 0.3255 | val. loss: 0.9689 | val. total acc: 0.7140 | val. airplane: 0.7193 | val. automobile: 0.8066 | val. bird: 0.6692 | val. cat: 0.5393 | val. deer: 0.6476 | val. dog: 0.6440 | val. frog: 0.7653 | val. horse: 0.7560 | val. ship: 0.7758 | val. truck: 0.8044 | time: 02 hour 46.20 min | finish after: 00 hour 1.68 min
+epoch: 199/200 | loss: 0.3168 | val. loss: 0.9282 | val. total acc: 0.7278 | val. airplane: 0.7152 | val. automobile: 0.8477 | val. bird: 0.6654 | val. cat: 0.5987 | val. deer: 0.6858 | val. dog: 0.6479 | val. frog: 0.7653 | val. horse: 0.7660 | val. ship: 0.7937 | val. truck: 0.7844 | time: 02 hour 46.64 min | finish after: 00 hour 0.84 min
+epoch: 200/200 | loss: 0.3196 | val. loss: 0.9097 | val. total acc: 0.7278 | val. airplane: 0.7295 | val. automobile: 0.8086 | val. bird: 0.6617 | val. cat: 0.5711 | val. deer: 0.6921 | val. dog: 0.6829 | val. frog: 0.7751 | val. horse: 0.7720 | val. ship: 0.7996 | val. truck: 0.7764 | time: 02 hour 47.09 min | finish after: 00 hour 0.00 min
+Total training time: 02 hour 47.09 min
+-----Training Finished-----

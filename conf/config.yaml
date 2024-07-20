@@ -1,12 +1,12 @@
 defaults:
   - _self_
-  - dataset: mnist
+  - dataset: cifar10
   - model: simple_cnn
   - optimizer: adam
   - lr_scheduler: multi_step
 seed: null
 dataloader: 
-  batch_size: 64
+  batch_size: 256
   num_workers: 16
   pin_memory: true
 epoch: 200
