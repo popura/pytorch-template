@@ -1,5 +1,5 @@
 services:
-  tokai-ml-cifar10:
+  pytorch-template:
     build:
       dockerfile: ./docker/rootful/Dockerfile
       args:
