@@ -52,9 +52,9 @@
 To enable GPU calculations, you can override `docker-compose.yml` with `docker-compose.gpu.yml`
 by creating `./docker/.env` file as follows:
 
-    ```
-      echo COMPOSE_FILE=docker-compose.yml:docker-compose.gpu.yml >> ./docker/.env
-    ```
+  ```
+    echo COMPOSE_FILE=docker-compose.yml:docker-compose.gpu.yml >> ./docker/.env
+  ```
 
 ### Rootful docker
 If you're unable to use rootless Docker,
