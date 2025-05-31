@@ -1,5 +1,5 @@
 services:
-  pytorch-template:
+  core:
     build:
       context: ../
       dockerfile: ./docker/rootful/Dockerfile
