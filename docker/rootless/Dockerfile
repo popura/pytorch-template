@@ -1,11 +1,14 @@
-ARG BASE_IMAGE=ubuntu20.04
+ARG BASE_IMAGE=ubuntu22.04
 FROM ${BASE_IMAGE}
 LABEL maintainer="Yuma Kinoshita"
 
 ARG PROJECT_NAME=pytorch-template
-ARG PYTHON_VERSION=3.9.11
+ARG UV_VERSION=0.7.12
+ARG UV_TORCH_SOURCE=cpu
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ARG PYTHON_VERSION=3.13.3
 ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
-ARG RUN_POETRY_INSTALL_AT_BUILD_TIME="false"
 
 ENV HOME=/root
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,34 +28,17 @@ RUN apt-get update -y && apt-get upgrade -y --fix-missing && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/src/*
 
-# --- Install Python ---
-RUN apt-get update -y && apt-get upgrade -y && \
-    apt-get install -y \
-    tk-dev \
-    build-essential \
-    libffi-dev libssl-dev \
-    zlib1g-dev liblzma-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /usr/local/src/*
-RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz && \
-    tar xJf Python-${PYTHON_VERSION}.tar.xz && \
-    cd Python-${PYTHON_VERSION} && \
-    ./configure && \
-    make && make install && \
-    cd ../ && \
-    python3 -m pip install --upgrade pip setuptools requests && \
-    python3 -m pip install poetry && \
-    python3 -m pip install jupyter && \
-    rm -rf Python-${PYTHON_VERSION}.tar.xz && \
-    rm -rf Python-${PYTHON_VERSION} && \
-    ln -s /usr/local/bin/python3 /usr/local/bin/python && \
-    ln -s /usr/local/bin/python3-config /usr/local/bin/python-config
+# --- Install uv ---
+COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /uvx /bin/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+ADD . /${APPCILATION_DIRECTORY}
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --extra ${cpu} --frozen
 
 WORKDIR ${APPLICATION_DIRECTORY}
-COPY pyproject.toml poetry.toml poetry.lock* .
-RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "ture" && poetry install || echo "skip to run poetry install."
-RUN test ${RUN_POETRY_INSTALL_AT_BUILD_TIME} = "true" && mv ${APPLICATION_DIRECTORY}/.venv ${HOME}/.venv || echo "skip to move .venv."
-
+ENV PATH="/${APPLICATION_DIRECTORY}/.venv/bin:$PATH"

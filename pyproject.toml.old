@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "pytorch-template"
+version = "0.1.1"
+description = ""
+authors = ["Yuma Kinoshita <ykinoshita@tokai.ac.jp>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.9,<3.12"
+numpy = "^1.24.2"
+matplotlib = "^3.7.0"
+scikit-learn = "^1.2.1"
+scipy = "^1.10.1"
+hydra-core = "^1.3.1"
+pandas = "^1.5.3"
+optuna = "^3.1.0"
+torch = {version = "^2.3.1+cu121", source = "torch_cu121"}
+torchvision = {version = "^0.18.1+cu121", source = "torch_cu121"}
+torchaudio = {version = "^2.3.1+cu121", source = "torch_cu121"}
+torchinfo = "^1.8.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+black = "^23.1.0"
+pytest = "^7.2.1"
+mypy = "^1.0.1"
+nox = "^2022.11.21"
+pre-commit = "^3.1.0"
+notebook = "^6.5.2"
+ipykernel = "^6.22.0"
+
+
+[[tool.poetry.source]]
+name = "torch_cu121"
+url = "https://download.pytorch.org/whl/cu121"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -2,7 +2,8 @@ services:
   core:
     build:
       args:
-        - BASE_IMAGE=nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+        - BASE_IMAGE=nvidia/cuda:12.8.1-cudnn-devel-ubuntu22.04
+        - UV_TORCH_SOURCE=cu128
     deploy:
       resources:
         reservations:
