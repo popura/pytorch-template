@@ -11,15 +11,15 @@ import torchinfo
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from src.data_pipeline import DataPipeline
-from src.model import SimpleCNN, ResNet
-from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
-from src.train_id import print_config, generate_train_id, is_same_config
-from src.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
-from src.util import set_random_seed
+from pytorch_template.data_pipeline import DataPipeline
+from pytorch_template.model import SimpleCNN, ResNet
+from pytorch_template.trainer import Trainer, LossEvaluator, AccuracyEvaluator
+from pytorch_template.train_id import print_config, generate_train_id, is_same_config
+from pytorch_template.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
+from pytorch_template.util import set_random_seed
 
 
-@hydra.main(version_base=None, config_path=f"/{os.environ['PROJECT_NAME']}/conf", config_name="config.yaml")
+@hydra.main(version_base=None, config_path="../conf", config_name="config.yaml")
 def main(cfg: DictConfig) -> None:
     # 乱数を固定
     set_random_seed(42)
@@ -28,7 +28,7 @@ def main(cfg: DictConfig) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # 学習結果の保存先ディレクトリを作る
-    output_dir = Path(f"/{os.environ['PROJECT_NAME']}/outputs/{Path(__file__).stem}")
+    output_dir = Path(__file__).parent.parent / "outputs" / Path(__file__).stem
     train_id = generate_train_id(cfg)
     p = output_dir / "history" / train_id
     if not p.exists():
@@ -78,8 +78,14 @@ def main(cfg: DictConfig) -> None:
     )
 
     # DNNを作る
-    #net = SimpleCNN(**cfg.model.params)
-    net = ResNet('ResNet18').to(device)
+    if cfg.model.name == 'simple_cnn':
+        net = SimpleCNN(**cfg.model.params)
+    elif cfg.model.name.startswith('resnet'):
+        resnet_name = cfg.model.name.replace('resnet', 'ResNet')
+        net = ResNet(resnet_name, **cfg.model.params)
+    else:
+        raise ValueError(f"Unknown model: {cfg.model.name}")
+    net = net.to(device)
     
     # ネットワークの構造やパラメータ数，必要なメモリ量などを表示
     input_size = train_set[0][0].shape

@@ -6,7 +6,7 @@ import time
 import torch
 import torch.nn as nn
 
-from src.trainer import Trainer
+from .trainer import Trainer
 
 
 class Trigger(object):

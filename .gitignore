@@ -100,6 +100,7 @@ ENV/
 /data/
 /model/
 *.pth
+/outputs/
 
 # AI
 CLAUDE.md

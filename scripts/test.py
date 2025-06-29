@@ -9,11 +9,11 @@ from torchvision.transforms import v2
 
 from omegaconf import OmegaConf
 
-from src.data_pipeline import DataPipeline
-from src.model import SimpleCNN
-from src.trainer import AccuracyEvaluator
-from src.train_id import print_config
-from src.util import set_random_seed
+from pytorch_template.data_pipeline import DataPipeline
+from pytorch_template.model import SimpleCNN
+from pytorch_template.trainer import AccuracyEvaluator
+from pytorch_template.train_id import print_config
+from pytorch_template.util import set_random_seed
 
 
 def main(
@@ -27,7 +27,8 @@ def main(
     print_config(cfg)
 
     net = SimpleCNN(**cfg.model.params)
-    net.load_state_dict(torch.load(f"/{os.environ['PROJECT_NAME']}/outputs/train/history/{train_id}/best_model.pth"))
+    project_root = Path(__file__).parent.parent
+    net.load_state_dict(torch.load(project_root / "outputs" / "train" / "history" / train_id / "best_model.pth"))
     net = net.to(device)
 
     transforms = v2.Compose([
@@ -63,7 +64,7 @@ def main(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--history_dir', type=str,
-                        default=f"/{os.environ['PROJECT_NAME']}/outputs/train/history",
+                        default=str(Path(__file__).parent.parent / "outputs" / "train" / "history"),
                         help='Directory path for searching trained models')
     parser.add_argument('--seed', type=int,
                         default=0,
@@ -90,7 +91,7 @@ if __name__ == "__main__":
                 shutil.rmtree(q.parent)
             continue
 
-        result_dir = Path(f"/{os.environ['PROJECT_NAME']}") / "outputs" / Path(__file__).stem
+        result_dir = Path(__file__).parent.parent / "outputs" / Path(__file__).stem
         result_dir /= train_id
         if result_dir.exists():
             print(f"Train ID {train_id} is already tested")

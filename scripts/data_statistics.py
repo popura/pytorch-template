@@ -8,12 +8,12 @@ import torchvision
 from torchvision.transforms import v2 
 import torchinfo
 
-from src.data_pipeline import DataPipeline
-from src.model import SimpleCNN
-from src.trainer import Trainer, LossEvaluator, AccuracyEvaluator
-from src.train_id import print_config, generate_train_id, is_same_config
-from src.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
-from src.util import set_random_seed
+from pytorch_template.data_pipeline import DataPipeline
+from pytorch_template.model import SimpleCNN
+from pytorch_template.trainer import Trainer, LossEvaluator, AccuracyEvaluator
+from pytorch_template.train_id import print_config, generate_train_id, is_same_config
+from pytorch_template.extension import ModelSaver, HistorySaver, HistoryLogger, MaxValueTrigger, IntervalTrigger, LearningCurvePlotter
+from pytorch_template.util import set_random_seed
 
 
 
