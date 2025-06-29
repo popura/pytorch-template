@@ -4,6 +4,17 @@ services:
       context: ../
       dockerfile: ./docker/rootful/Dockerfile
       args:
-        - UID=1000
-        - GID=1000
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER_NAME=developer
+        - GROUP_NAME=developers
+    volumes:
+      - type: volume
+        source: venvdata
+        target: /home/developer/.venv
+        volume:
+          nocopy: true
+    post_start:
+      - command: chown -R developer:developers /home/developer/.venv
+        user: root 
 

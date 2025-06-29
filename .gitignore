@@ -94,8 +94,12 @@ ENV/
 
 # Scripts for private purpose
 /notebooks/local/
+/scripts/local/
 
 # Data
 /data/
 /model/
 *.pth
+
+# AI
+CLAUDE.md

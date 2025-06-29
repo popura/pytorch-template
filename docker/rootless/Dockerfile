@@ -1,22 +1,24 @@
-ARG BASE_IMAGE=ubuntu22.04
-FROM ${BASE_IMAGE}
-LABEL maintainer="Yuma Kinoshita"
-
+# ---------- 1st stage ----------
+ARG BASE_IMAGE=ubuntu:22.04
 ARG PROJECT_NAME=pytorch-template
-ARG UV_VERSION=0.7.12
 ARG UV_TORCH_SOURCE=cpu
+ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
+ARG UV_VERSION=0.7.12
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv-bin
+
+# ---------- 2nd stage ----------
+FROM ${BASE_IMAGE}
+ARG BASE_IMAGE=ubuntu:22.04
+ARG PROJECT_NAME=pytorch-template
+ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
+ARG UV_TORCH_SOURCE=cpu
+ENV HOME=/root
+ENV UV_PROJECT_ENVIRONMENT=${HOME}/.venv
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
-ARG PYTHON_VERSION=3.13.3
-ARG APPLICATION_DIRECTORY=/${PROJECT_NAME}
-
-ENV HOME=/root
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
-
-# --- Change repository ---
-# RUN sed -i.org -e 's|archive.ubuntu.com|ubuntutym.u-toyama.ac.jp|g' /etc/apt/sources.list && \
-#     apt-get clean
+LABEL maintainer="Yuma Kinoshita"
 
 # --- Install Packages with Apt ---
 RUN apt-get update -y && apt-get upgrade -y --fix-missing && \
@@ -29,16 +31,15 @@ RUN apt-get update -y && apt-get upgrade -y --fix-missing && \
     rm -rf /usr/local/src/*
 
 # --- Install uv ---
-COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /uvx /bin/
+COPY --from=uv-bin /uv /uvx /bin/
 
-RUN --mount=type=cache,target=/root/.cache/uv \
+ADD . ${APPLICATION_DIRECTORY}
+WORKDIR ${APPLICATION_DIRECTORY}
+
+RUN --mount=type=cache,target=${HOME}/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev
+    uv venv ${UV_PROJECT_ENVIRONMENT} && \
+    uv sync --frozen --no-install-project --extra ${UV_TORCH_SOURCE}
 
-ADD . /${APPCILATION_DIRECTORY}
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --extra ${cpu} --frozen
-
-WORKDIR ${APPLICATION_DIRECTORY}
-ENV PATH="/${APPLICATION_DIRECTORY}/.venv/bin:$PATH"
+ENV PATH="${UV_PROJECT_ENVIRONMENT}/bin:$PATH"
