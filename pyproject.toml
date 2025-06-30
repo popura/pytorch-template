@@ -72,5 +72,8 @@ torchaudio = [
 dev = [
     "ipykernel>=6.29.5",
     "ipython>=9.3.0",
+    "mypy>=1.16.1",
+    "pre-commit>=4.2.0",
+    "ruff>=0.12.1",
 ]
 
