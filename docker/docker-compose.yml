@@ -1,3 +1,4 @@
+name: ${PROJECT_NAME:-pytorch-template}
 services:
   core:
     build:
@@ -8,6 +9,7 @@ services:
         - PROJECT_NAME=${PROJECT_NAME:-pytorch-template}
         - UV_VERSION=0.7.16
         - UV_TORCH_SOURCE=cpu
+    image: ${PROJECT_NAME:-pytorch-template}
     tty: true
     restart: always
     shm_size: 16g
